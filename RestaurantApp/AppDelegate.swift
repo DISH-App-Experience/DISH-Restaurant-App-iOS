@@ -7,7 +7,6 @@
 
 import UIKit
 import Firebase
-import FBSDKCoreKit
 import GoogleSignIn
 
 @main
@@ -23,16 +22,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Sign In With Google Configuration
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
-        // Sign In With Facebook Configuration
-        ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
-        
         // Pre Built Sign Out Code
-        let auth = Auth.auth()
-        do {
-            try auth.signOut()
-        } catch let error as NSError {
-            print("Error signing out: \(error.localizedDescription)")
-        }
+//        let auth = Auth.auth()
+//        do {
+//            try auth.signOut()
+//        } catch let error as NSError {
+//            print("Error signing out: \(error.localizedDescription)")
+//        }
         
         // Birthday Notifcation Authorization Handler
         let center = UNUserNotificationCenter.current()
@@ -47,10 +43,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         center.delegate = self
         
         return true
-    }
-    
-    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
-        return ApplicationDelegate.shared.application(application, open: url, sourceApplication: sourceApplication, annotation: annotation)
     }
 
     // MARK: UISceneSession Lifecycle

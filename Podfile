@@ -20,10 +20,6 @@ target 'RestaurantApp' do
   pod 'Firebase/Storage'
 
   pod 'GoogleSignIn'
-  
-  pod 'FacebookLogin'
-  
-  pod 'FacebookCore'
 
   target 'RestaurantAppTests' do
     inherit! :search_paths

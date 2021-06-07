@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3EC62DFABAE8604EEB84DF8B /* Pods_RestaurantAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8713E697AACB5CD30EF43AD /* Pods_RestaurantAppTests.framework */; };
 		43E823A738B04B9DB34BD420 /* Pods_RestaurantApp_RestaurantAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C158803147E8D2F1864378D8 /* Pods_RestaurantApp_RestaurantAppUITests.framework */; };
+		78098878266EA9B10094306C /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78098877266EA9B10094306C /* HomeController.swift */; };
 		78419352266D0C79001E246E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419351266D0C79001E246E /* AppDelegate.swift */; };
 		78419354266D0C79001E246E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419353266D0C79001E246E /* SceneDelegate.swift */; };
 		78419356266D0C79001E246E /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419355266D0C79001E246E /* WelcomeController.swift */; };
@@ -26,8 +27,12 @@
 		78586220266D32EA00FBC0DE /* SignInController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7858621F266D32EA00FBC0DE /* SignInController.swift */; };
 		78586222266D343B00FBC0DE /* MainTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586221266D343B00FBC0DE /* MainTextField.swift */; };
 		78586224266D3AAD00FBC0DE /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586223266D3AAD00FBC0DE /* SignUpController.swift */; };
-		78586228266D3B8E00FBC0DE /* Home.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586227266D3B8E00FBC0DE /* Home.swift */; };
+		78586228266D3B8E00FBC0DE /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586227266D3B8E00FBC0DE /* TabBarController.swift */; };
 		7858622A266D425B00FBC0DE /* SignUpInformationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586229266D425B00FBC0DE /* SignUpInformationController.swift */; };
+		7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5EE266E85F000A05B41 /* MenuController.swift */; };
+		7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5F0266E85FB00A05B41 /* RewardsController.swift */; };
+		7897F5F3266E860700A05B41 /* ActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5F2266E860700A05B41 /* ActionController.swift */; };
+		7897F5F5266E860F00A05B41 /* ReservationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5F4266E860F00A05B41 /* ReservationController.swift */; };
 		A899AC3F391F9EFAFABB8FEE /* Pods_RestaurantApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34AA04A10C3D76CD16349B46 /* Pods_RestaurantApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +60,7 @@
 		34AA04A10C3D76CD16349B46 /* Pods_RestaurantApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FD1429747B0182AB762E980 /* Pods-RestaurantApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp.release.xcconfig"; path = "Target Support Files/Pods-RestaurantApp/Pods-RestaurantApp.release.xcconfig"; sourceTree = "<group>"; };
 		627588554A0874337B81124D /* Pods-RestaurantApp-RestaurantAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp-RestaurantAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-RestaurantApp-RestaurantAppUITests/Pods-RestaurantApp-RestaurantAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		78098877266EA9B10094306C /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
 		7841934E266D0C79001E246E /* RestaurantApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RestaurantApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78419351266D0C79001E246E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78419353266D0C79001E246E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -78,9 +84,13 @@
 		7858621F266D32EA00FBC0DE /* SignInController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInController.swift; sourceTree = "<group>"; };
 		78586221266D343B00FBC0DE /* MainTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTextField.swift; sourceTree = "<group>"; };
 		78586223266D3AAD00FBC0DE /* SignUpController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpController.swift; sourceTree = "<group>"; };
-		78586227266D3B8E00FBC0DE /* Home.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Home.swift; sourceTree = "<group>"; };
+		78586227266D3B8E00FBC0DE /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		78586229266D425B00FBC0DE /* SignUpInformationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpInformationController.swift; sourceTree = "<group>"; };
 		7858622B266DF0A000FBC0DE /* RestaurantApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RestaurantApp.entitlements; sourceTree = "<group>"; };
+		7897F5EE266E85F000A05B41 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
+		7897F5F0266E85FB00A05B41 /* RewardsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsController.swift; sourceTree = "<group>"; };
+		7897F5F2266E860700A05B41 /* ActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionController.swift; sourceTree = "<group>"; };
+		7897F5F4266E860F00A05B41 /* ReservationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationController.swift; sourceTree = "<group>"; };
 		7C714A1F432AB4B6505EAB4B /* Pods-RestaurantApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp.debug.xcconfig"; path = "Target Support Files/Pods-RestaurantApp/Pods-RestaurantApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C158803147E8D2F1864378D8 /* Pods_RestaurantApp_RestaurantAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantApp_RestaurantAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8713E697AACB5CD30EF43AD /* Pods_RestaurantAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -214,7 +224,7 @@
 			children = (
 				78586225266D3B5600FBC0DE /* Startup */,
 				78586226266D3B5C00FBC0DE /* Auth */,
-				78586227266D3B8E00FBC0DE /* Home.swift */,
+				7897F5F6266EA97300A05B41 /* New Group */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -236,6 +246,19 @@
 				78586229266D425B00FBC0DE /* SignUpInformationController.swift */,
 			);
 			path = Auth;
+			sourceTree = "<group>";
+		};
+		7897F5F6266EA97300A05B41 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				78586227266D3B8E00FBC0DE /* TabBarController.swift */,
+				78098877266EA9B10094306C /* HomeController.swift */,
+				7897F5F2266E860700A05B41 /* ActionController.swift */,
+				7897F5F4266E860F00A05B41 /* ReservationController.swift */,
+				7897F5EE266E85F000A05B41 /* MenuController.swift */,
+				7897F5F0266E85FB00A05B41 /* RewardsController.swift */,
+			);
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 		A89A5E14BDADA6036F7DE68B /* Pods */ = {
@@ -528,11 +551,16 @@
 				78586212266D109300FBC0DE /* ViewController.swift in Sources */,
 				78586216266D126500FBC0DE /* UIColor.swift in Sources */,
 				78586222266D343B00FBC0DE /* MainTextField.swift in Sources */,
+				7897F5F5266E860F00A05B41 /* ReservationController.swift in Sources */,
+				78098878266EA9B10094306C /* HomeController.swift in Sources */,
+				7897F5F3266E860700A05B41 /* ActionController.swift in Sources */,
 				78419382266D0E27001E246E /* Restaurant.swift in Sources */,
+				7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */,
 				78586220266D32EA00FBC0DE /* SignInController.swift in Sources */,
 				78419356266D0C79001E246E /* WelcomeController.swift in Sources */,
-				78586228266D3B8E00FBC0DE /* Home.swift in Sources */,
+				78586228266D3B8E00FBC0DE /* TabBarController.swift in Sources */,
 				7858621B266D17AE00FBC0DE /* MainButton.swift in Sources */,
+				7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */,
 				7858622A266D425B00FBC0DE /* SignUpInformationController.swift in Sources */,
 				78419352266D0C79001E246E /* AppDelegate.swift in Sources */,
 				78419354266D0C79001E246E /* SceneDelegate.swift in Sources */,
