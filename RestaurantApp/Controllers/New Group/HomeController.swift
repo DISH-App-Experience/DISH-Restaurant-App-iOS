@@ -180,13 +180,13 @@ class HomeController: UIViewController {
         
         switch weekday {
             case "Monday":
-                alertDescription.text = "How about starting the week off with \(Restaurant.shared.name)"
+                alertDescription.text = "How about starting the week with \(Restaurant.shared.name)?"
             case "Tuesday":
-                alertDescription.text = "The week is so slow! Speed it up with a delicous meal!"
+                alertDescription.text = "It's only Tuesday?! Speed up with a delicous meal!"
             case "Wednesday":
-                alertDescription.text = "You're halfway through the week! \(Restaurant.shared.name) dinner?"
+                alertDescription.text = "You're halfway through the week!"
             case "Thursday":
-                alertDescription.text = "One day til Friday! Aren't you excited?"
+                alertDescription.text = "One day 'til Friday! Aren't you excited?"
             case "Friday":
                 alertDescription.text = "TGIF!! You're made it through the week!"
             case "Saturday":
