@@ -45,6 +45,15 @@ extension UIViewController {
         self.present(controller, animated: true, completion: nil)
     }
     
+    func moveToTabbar() {
+        let controller = TabBarController()
+        controller.checkControllers()
+        controller.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            self.present(controller, animated: true, completion: nil)
+//        })
+    }
+    
     func simpleAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))

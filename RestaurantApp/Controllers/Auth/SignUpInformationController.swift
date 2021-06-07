@@ -119,8 +119,8 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
     private func completion() {
         birthdayNotification(withDate: birthdayDate)
         hideLoading()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: {
-            self.moveToController(controller: Home())
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            self.moveToTabbar()
         })
     }
     

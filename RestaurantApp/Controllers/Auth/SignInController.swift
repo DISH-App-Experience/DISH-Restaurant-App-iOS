@@ -156,7 +156,7 @@ class SignInController: UIViewController, UITextFieldDelegate {
                     // success
                     // go to home page
                     self.hideLoading()
-                    self.moveToController(controller: Home())
+                    self.moveToTabbar()
                 }
             }
         } else {

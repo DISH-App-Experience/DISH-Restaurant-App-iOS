@@ -8,9 +8,7 @@
 import UIKit
 import Firebase
 import SDWebImage
-import FacebookCore
 import GoogleSignIn
-import FacebookLogin
 import MBProgressHUD
 import AuthenticationServices
 import CryptoKit
@@ -53,13 +51,6 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
         let button = MainButton()
         button.backgroundColor = UIColor(hexString: "F2F2F2")
         button.addTarget(self, action: #selector(googleButtonPressed), for: UIControl.Event.touchUpInside)
-        return button
-    }()
-    
-    let facebookButton : MainButton = {
-        let button = MainButton()
-        button.backgroundColor = UIColor(hexString: "00A3FF")
-        button.addTarget(self, action: #selector(facebookButtonPressed), for: UIControl.Event.touchUpInside)
         return button
     }()
     
@@ -138,14 +129,8 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
         googleButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
         googleButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
-        view.addSubview(facebookButton)
-        facebookButton.topAnchor.constraint(equalTo: googleButton.bottomAnchor, constant: 19).isActive = true
-        facebookButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
-        facebookButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
-        facebookButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        
         view.addSubview(appleButton)
-        appleButton.topAnchor.constraint(equalTo: facebookButton.bottomAnchor, constant: 19).isActive = true
+        appleButton.topAnchor.constraint(equalTo: googleButton.bottomAnchor, constant: 19).isActive = true
         appleButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
         appleButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
         appleButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
@@ -177,10 +162,6 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
         attribute1.append(NSAttributedString(string: "e", attributes: [NSAttributedString.Key.foregroundColor : UIColor(hexString: "EA4335"), NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]))
         googleButton.setAttributedTitle(attribute1, for: UIControl.State.normal)
         
-        let attribute2 = NSMutableAttributedString(string: "Continue with ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor : UIColor.white])
-        attribute2.append(NSAttributedString(string: "Facebook", attributes: [NSAttributedString.Key.foregroundColor : UIColor.white, NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]))
-        facebookButton.setAttributedTitle(attribute2, for: UIControl.State.normal)
-        
         let attribute3 = NSMutableAttributedString(string: "Continue with ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor : UIColor.white])
         attribute3.append(NSAttributedString(string: "Apple", attributes: [NSAttributedString.Key.foregroundColor : UIColor.white, NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]))
         appleButton.setAttributedTitle(attribute3, for: UIControl.State.normal)
@@ -197,39 +178,6 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
     @objc func googleButtonPressed() {
         GIDSignIn.sharedInstance()?.presentingViewController = self
         GIDSignIn.sharedInstance().signIn()
-    }
-    
-    @objc func facebookButtonPressed() {
-        print("facebook button pressed")
-        showLoading()
-        let loginManager = LoginManager()
-        loginManager.logIn(permissions: [Permission.email, Permission.publicProfile], viewController: self) { (result) in
-            switch result {
-            case .success(granted: _, declined: _, token: _):
-                if Auth.auth().currentUser != nil {
-                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).observe(DataEventType.value) { (snapshot) in
-                        if snapshot.exists() {
-                            self.hideLoading()
-                            // user is signed in
-                            // user can enter official app interface
-                            self.moveToController(controller: Home())
-                        } else {
-                            self.hideLoading()
-                            // user does not exist
-                            // user will be created
-                            // user is pushed to following screen
-                            self.moveToInfoController(withEmail: Auth.auth().currentUser!.email!)
-                        }
-                    }
-                }
-            case .failed(let err):
-                self.hideLoading()
-                self.simpleAlert(title: "Error", message: err.localizedDescription)
-            case .cancelled:
-                self.hideLoading()
-                print("auth cancelled")
-            }
-        }
     }
     
     @objc func appleButtonPressed() {
@@ -277,7 +225,7 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
                             self.hideLoading()
                             // user is signed in
                             // user can enter official app interface
-                            self.moveToController(controller: Home())
+                            self.moveToTabbar()
                         } else {
                             self.hideLoading()
                             // user does not exist
@@ -363,7 +311,7 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
                                 self.hideLoading()
                                 // user is signed in
                                 // user can enter official app interface
-                                self.moveToController(controller: Home())
+                                self.moveToTabbar()
                             } else {
                                 self.hideLoading()
                                 // user does not exist

@@ -90,9 +90,12 @@ class LoadingController: UIViewController {
     }
     
     private func completion() {
+        showLoading()
         if Auth.auth().currentUser != nil {
-            moveToController(controller: Home())
+            hideLoading()
+            moveToTabbar()
         } else {
+            hideLoading()
             moveToController(controller: WelcomeController())
         }
     }
