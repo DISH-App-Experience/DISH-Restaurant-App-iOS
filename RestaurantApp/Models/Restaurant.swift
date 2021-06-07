@@ -20,6 +20,10 @@ class Restaurant {
     
     var textColor = UIColor()
     
-    var logo = UIImage()
+    var textColorOnButton = UIColor()
+    
+    var logo = String()
+    
+    var name = String()
     
 }

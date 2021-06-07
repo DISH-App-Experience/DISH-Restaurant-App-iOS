@@ -6,9 +6,18 @@
 //
 
 import UIKit
+import Firebase
 import SDWebImage
+import FacebookCore
+import GoogleSignIn
+import FacebookLogin
+import MBProgressHUD
+import AuthenticationServices
+import CryptoKit
 
-class WelcomeController: UIViewController {
+class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationControllerPresentationContextProviding, ASAuthorizationControllerDelegate {
+    
+    var currentNonce : String?
     
     let logoImageView : UIImageView = {
         let imageView = UIImageView()
@@ -83,6 +92,8 @@ class WelcomeController: UIViewController {
         updateViewConstraints()
         setupButtons()
         
+        GIDSignIn.sharedInstance().delegate = self
+        
         // Do any additional setup after loading the view.
     }
     
@@ -94,8 +105,8 @@ class WelcomeController: UIViewController {
         backend()
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
         navigationController?.navigationBar.isHidden = false
     }
@@ -174,7 +185,7 @@ class WelcomeController: UIViewController {
         attribute3.append(NSAttributedString(string: "Apple", attributes: [NSAttributedString.Key.foregroundColor : UIColor.white, NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]))
         appleButton.setAttributedTitle(attribute3, for: UIControl.State.normal)
         
-        let attribute4 = NSMutableAttributedString(string: "Continue with ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton])
+        let attribute4 = NSMutableAttributedString(string: "Sign In with ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton])
         attribute4.append(NSAttributedString(string: "Email", attributes: [NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton, NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]))
         emailButton.setAttributedTitle(attribute4, for: UIControl.State.normal)
         
@@ -184,15 +195,55 @@ class WelcomeController: UIViewController {
     }
     
     @objc func googleButtonPressed() {
-        print("google button pressed")
+        GIDSignIn.sharedInstance()?.presentingViewController = self
+        GIDSignIn.sharedInstance().signIn()
     }
     
     @objc func facebookButtonPressed() {
         print("facebook button pressed")
+        showLoading()
+        let loginManager = LoginManager()
+        loginManager.logIn(permissions: [Permission.email, Permission.publicProfile], viewController: self) { (result) in
+            switch result {
+            case .success(granted: _, declined: _, token: _):
+                if Auth.auth().currentUser != nil {
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).observe(DataEventType.value) { (snapshot) in
+                        if snapshot.exists() {
+                            self.hideLoading()
+                            // user is signed in
+                            // user can enter official app interface
+                            self.moveToController(controller: Home())
+                        } else {
+                            self.hideLoading()
+                            // user does not exist
+                            // user will be created
+                            // user is pushed to following screen
+                            self.moveToInfoController(withEmail: Auth.auth().currentUser!.email!)
+                        }
+                    }
+                }
+            case .failed(let err):
+                self.hideLoading()
+                self.simpleAlert(title: "Error", message: err.localizedDescription)
+            case .cancelled:
+                self.hideLoading()
+                print("auth cancelled")
+            }
+        }
     }
     
     @objc func appleButtonPressed() {
         print("apple button pressed")
+        let nonce = self.randomNonceString()
+        self.currentNonce = nonce
+        let appleIDProvider = ASAuthorizationAppleIDProvider()
+        let request = appleIDProvider.createRequest()
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = self.sha256(nonce)
+        let authorizationController = ASAuthorizationController(authorizationRequests: [request])
+        authorizationController.delegate = self
+        authorizationController.presentationContextProvider = self
+        authorizationController.performRequests()
     }
     
     @objc func emailButtonPressed() {
@@ -202,6 +253,129 @@ class WelcomeController: UIViewController {
     
     @objc func signUpExtPressed() {
         moveToController(controller: SignUpController())
+    }
+    
+    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {
+        showLoading()
+        if let error = error {
+            hideLoading()
+            print("ERROR: \(error.localizedDescription)")
+            simpleAlert(title: "Error", message: error.localizedDescription)
+            return
+        }
+        guard let authentication = user.authentication else { return }
+        let credential = GoogleAuthProvider.credential(withIDToken: authentication.idToken, accessToken: authentication.accessToken)
+        Auth.auth().signIn(with: credential) { (result, signInError) in
+            if let error = signInError {
+                MBProgressHUD.hide(for: self.view, animated: true)
+                self.simpleAlert(title: "Error", message: error.localizedDescription)
+                return
+            } else {
+                if Auth.auth().currentUser != nil {
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).observe(DataEventType.value) { (snapshot) in
+                        if snapshot.exists() {
+                            self.hideLoading()
+                            // user is signed in
+                            // user can enter official app interface
+                            self.moveToController(controller: Home())
+                        } else {
+                            self.hideLoading()
+                            // user does not exist
+                            // user will be created
+                            // user is pushed to following screen
+                            self.moveToInfoController(withEmail: Auth.auth().currentUser!.email!)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        let hashString = hashedData.compactMap {
+            return String(format: "%02x", $0)
+        }.joined()
+        return hashString
+    }
+
+    private func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        let charset: Array<Character> =
+            Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        var result = ""
+        var remainingLength = length
+        while remainingLength > 0 {
+            let randoms: [UInt8] = (0 ..< 16).map { _ in
+                var random: UInt8 = 0
+                let errorCode = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+                if errorCode != errSecSuccess {
+                    fatalError("Unable to generate nonce. SecRandomCopyBytes failed with OSStatus \(errorCode)")
+                }
+                return random
+            }
+            randoms.forEach { random in
+                if remainingLength == 0 {
+                    return
+                }
+                if random < charset.count {
+                    result.append(charset[Int(random)])
+                    remainingLength -= 1
+                }
+            }
+        }
+        return result
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return self.view.window!
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+        showLoading()
+        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+            guard let nonce = currentNonce else {
+                hideLoading()
+                simpleAlert(title: "Error", message: "Invalid state: A login callback was received, but no login request was sent.")
+                return
+            }
+            guard let appleIDToken = appleIDCredential.identityToken else {
+                hideLoading()
+                simpleAlert(title: "Error", message: "Unable to fetch identity token")
+                return
+            }
+            guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else {
+                hideLoading()
+                simpleAlert(title: "Unable to serialize token string from data", message: appleIDToken.debugDescription)
+                return
+            }
+            let credential = OAuthProvider.credential(withProviderID: "apple.com", idToken: idTokenString, rawNonce: nonce)
+            Auth.auth().signIn(with: credential) { (authResult, error) in
+                if let error = error {
+                    self.simpleAlert(title: "Error", message: error.localizedDescription)
+                    MBProgressHUD.hide(for: self.view, animated: true)
+                    return
+                } else {
+                    if Auth.auth().currentUser != nil {
+                        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).observe(DataEventType.value) { (snapshot) in
+                            if snapshot.exists() {
+                                self.hideLoading()
+                                // user is signed in
+                                // user can enter official app interface
+                                self.moveToController(controller: Home())
+                            } else {
+                                self.hideLoading()
+                                // user does not exist
+                                // user will be created
+                                // user is pushed to following screen
+                                self.moveToInfoController(withEmail: Auth.auth().currentUser!.email!)
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 

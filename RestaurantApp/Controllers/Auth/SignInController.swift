@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Firebase
 
 class SignInController: UIViewController, UITextFieldDelegate {
     
@@ -145,7 +146,23 @@ class SignInController: UIViewController, UITextFieldDelegate {
     }
     
     @objc func mainButtonPressed() {
-        print("sign in")
+        showLoading()
+        if let email = emailTextfield.text, let password = passwordTextfield.text {
+            Auth.auth().signIn(withEmail: email, password: password) { result, error in
+                if let error = error {
+                    self.hideLoading()
+                    self.simpleAlert(title: "Error", message: error.localizedDescription)
+                } else {
+                    // success
+                    // go to home page
+                    self.hideLoading()
+                    self.moveToController(controller: Home())
+                }
+            }
+        } else {
+            hideLoading()
+            simpleAlert(title: "Error", message: "Please fill in all fields")
+        }
     }
     
     @objc func signUpExtPressed() {
