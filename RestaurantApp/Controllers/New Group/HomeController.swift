@@ -175,22 +175,31 @@ class HomeController: UIViewController {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
-        alertLabel.text = "Happy \(formatter.string(from: Date()))!"
+        let weekday = formatter.string(from: Date())
+        alertLabel.text = "Happy \(weekday)!"
+        
+        switch weekday {
+            case "Monday":
+                alertDescription.text = "How about starting the week off with \(Restaurant.shared.name)"
+            case "Tuesday":
+                alertDescription.text = "The week is so slow! Speed it up with a delicous meal!"
+            case "Wednesday":
+                alertDescription.text = "You're halfway through the week! \(Restaurant.shared.name) dinner?"
+            case "Thursday":
+                alertDescription.text = "One day til Friday! Aren't you excited?"
+            case "Friday":
+                alertDescription.text = "TGIF!! You're made it through the week!"
+            case "Saturday":
+                alertDescription.text = "Weekend treat at \(Restaurant.shared.name)?"
+            case "Sunday":
+                alertDescription.text = "Enjoy the last bits of the weekend at \(Restaurant.shared.name)"
+            default:
+                alertDescription.text = "If you want a rainbow, you'll have to put up with the rain! Keep going!!"
+        }
     }
     
     @objc func profileImagePressed() {
-        print("to profiel")
+        print("to profile")
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
