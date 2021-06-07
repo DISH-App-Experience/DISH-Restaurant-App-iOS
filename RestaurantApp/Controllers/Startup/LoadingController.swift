@@ -90,9 +90,11 @@ class LoadingController: UIViewController {
     }
     
     private func completion() {
-        let controller = WelcomeController()
-        controller.modalPresentationStyle = UIModalPresentationStyle.fullScreen
-        self.present(controller, animated: true, completion: nil)
+        if Auth.auth().currentUser != nil {
+            moveToController(controller: Home())
+        } else {
+            moveToController(controller: WelcomeController())
+        }
     }
 
 }
