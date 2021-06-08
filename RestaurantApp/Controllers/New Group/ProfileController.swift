@@ -86,7 +86,9 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
                 case 2:
                     cell.responseLabel.text = user.gender!
                 case 3:
-                    cell.responseLabel.text = "\(user.birthday!)"
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "MMM d, yyyy"
+                    cell.responseLabel.text = "\(formatter.string(from: Date(timeIntervalSince1970: TimeInterval(user.birthday!))))"
                 default:
                     cell.responseLabel.text = ""
                 }
@@ -135,7 +137,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
                 root.child("gender").observe(DataEventType.value) { genderSS in
                     gender = genderSS.value as? String ?? "Error"
                     root.child("birthday").observe(DataEventType.value) { birthdaySS in
-                        birthday = lastNameSS.value as? Int ?? 0
+                        birthday = birthdaySS.value as? Int ?? 0
                         let user = User()
                         user.firstName = firstName
                         user.lastName = lastName
