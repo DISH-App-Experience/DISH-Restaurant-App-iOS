@@ -10,6 +10,10 @@
 		3EC62DFABAE8604EEB84DF8B /* Pods_RestaurantAppTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8713E697AACB5CD30EF43AD /* Pods_RestaurantAppTests.framework */; };
 		43E823A738B04B9DB34BD420 /* Pods_RestaurantApp_RestaurantAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C158803147E8D2F1864378D8 /* Pods_RestaurantApp_RestaurantAppUITests.framework */; };
 		78098878266EA9B10094306C /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78098877266EA9B10094306C /* HomeController.swift */; };
+		7809887A266F3DFD0094306C /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78098879266F3DFD0094306C /* ProfileController.swift */; };
+		7809887D266F3F0D0094306C /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7809887C266F3F0D0094306C /* ProfileCell.swift */; };
+		7809887F266F42680094306C /* ProfileInformationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7809887E266F42680094306C /* ProfileInformationController.swift */; };
+		78098883266F45D70094306C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78098882266F45D70094306C /* User.swift */; };
 		78419352266D0C79001E246E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419351266D0C79001E246E /* AppDelegate.swift */; };
 		78419354266D0C79001E246E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419353266D0C79001E246E /* SceneDelegate.swift */; };
 		78419356266D0C79001E246E /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419355266D0C79001E246E /* WelcomeController.swift */; };
@@ -61,6 +65,10 @@
 		3FD1429747B0182AB762E980 /* Pods-RestaurantApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp.release.xcconfig"; path = "Target Support Files/Pods-RestaurantApp/Pods-RestaurantApp.release.xcconfig"; sourceTree = "<group>"; };
 		627588554A0874337B81124D /* Pods-RestaurantApp-RestaurantAppUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp-RestaurantAppUITests.debug.xcconfig"; path = "Target Support Files/Pods-RestaurantApp-RestaurantAppUITests/Pods-RestaurantApp-RestaurantAppUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		78098877266EA9B10094306C /* HomeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeController.swift; sourceTree = "<group>"; };
+		78098879266F3DFD0094306C /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
+		7809887C266F3F0D0094306C /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
+		7809887E266F42680094306C /* ProfileInformationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInformationController.swift; sourceTree = "<group>"; };
+		78098882266F45D70094306C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		7841934E266D0C79001E246E /* RestaurantApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RestaurantApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78419351266D0C79001E246E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78419353266D0C79001E246E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -134,6 +142,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		7809887B266F3EF90094306C /* View */ = {
+			isa = PBXGroup;
+			children = (
+				7809887C266F3F0D0094306C /* ProfileCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		78419345266D0C79001E246E = {
 			isa = PBXGroup;
 			children = (
@@ -165,6 +181,7 @@
 				78586218266D13F900FBC0DE /* Models */,
 				78586217266D13F200FBC0DE /* Extensions */,
 				78586219266D178600FBC0DE /* UI */,
+				7809887B266F3EF90094306C /* View */,
 				7858621E266D32D300FBC0DE /* Controllers */,
 				7841935A266D0C7D001E246E /* Assets.xcassets */,
 				7841935C266D0C7D001E246E /* LaunchScreen.storyboard */,
@@ -206,6 +223,7 @@
 			isa = PBXGroup;
 			children = (
 				78419381266D0E27001E246E /* Restaurant.swift */,
+				78098882266F45D70094306C /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -253,6 +271,8 @@
 			children = (
 				78586227266D3B8E00FBC0DE /* TabBarController.swift */,
 				78098877266EA9B10094306C /* HomeController.swift */,
+				78098879266F3DFD0094306C /* ProfileController.swift */,
+				7809887E266F42680094306C /* ProfileInformationController.swift */,
 				7897F5F2266E860700A05B41 /* ActionController.swift */,
 				7897F5F4266E860F00A05B41 /* ReservationController.swift */,
 				7897F5EE266E85F000A05B41 /* MenuController.swift */,
@@ -554,6 +574,7 @@
 				7897F5F5266E860F00A05B41 /* ReservationController.swift in Sources */,
 				78098878266EA9B10094306C /* HomeController.swift in Sources */,
 				7897F5F3266E860700A05B41 /* ActionController.swift in Sources */,
+				7809887D266F3F0D0094306C /* ProfileCell.swift in Sources */,
 				78419382266D0E27001E246E /* Restaurant.swift in Sources */,
 				7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */,
 				78586220266D32EA00FBC0DE /* SignInController.swift in Sources */,
@@ -563,10 +584,13 @@
 				7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */,
 				7858622A266D425B00FBC0DE /* SignUpInformationController.swift in Sources */,
 				78419352266D0C79001E246E /* AppDelegate.swift in Sources */,
+				7809887F266F42680094306C /* ProfileInformationController.swift in Sources */,
+				7809887A266F3DFD0094306C /* ProfileController.swift in Sources */,
 				78419354266D0C79001E246E /* SceneDelegate.swift in Sources */,
 				78419384266D0E87001E246E /* LoadingController.swift in Sources */,
 				7858621D266D1A3700FBC0DE /* UIButton.swift in Sources */,
 				78586224266D3AAD00FBC0DE /* SignUpController.swift in Sources */,
+				78098883266F45D70094306C /* User.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,6 +11,13 @@ import SDWebImage
 
 class HomeController: UIViewController {
     
+    let statusBarView : UIView = {
+        let view = UIView()
+        view.backgroundColor = Restaurant.shared.backgroundColor
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     let scrollView : UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -70,7 +77,7 @@ class HomeController: UIViewController {
         let label = UILabel()
         label.text = "Hi there!"
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 15)
+        label.font = UIFont.systemFont(ofSize: 12)
         label.textColor = Restaurant.shared.textColorOnButton
         label.textAlignment = NSTextAlignment.left
         return label
@@ -89,6 +96,7 @@ class HomeController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        navigationController?.navigationBar.tintColor = Restaurant.shared.themeColor
         navigationController?.navigationBar.isHidden = true
         
         backend()
@@ -145,6 +153,12 @@ class HomeController: UIViewController {
         alertDescription.leftAnchor.constraint(equalTo: alertLabel.leftAnchor).isActive = true
         alertDescription.rightAnchor.constraint(equalTo: alertLabel.rightAnchor).isActive = true
         alertDescription.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        
+        view.addSubview(statusBarView)
+        statusBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        statusBarView.heightAnchor.constraint(equalToConstant: 25).isActive = true
     }
     
     private func backend() {
@@ -199,7 +213,7 @@ class HomeController: UIViewController {
     }
     
     @objc func profileImagePressed() {
-        print("to profile")
+        moveToProfileController()
     }
 
 }

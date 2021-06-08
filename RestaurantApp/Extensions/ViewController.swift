@@ -54,10 +54,33 @@ extension UIViewController {
 //        })
     }
     
+    func moveToWelcomeController() {
+        let controller = WelcomeController()
+        controller.modalPresentationStyle = UIModalPresentationStyle.fullScreen
+        self.present(controller, animated: true, completion: nil)
+    }
+    
+    func moveToProfileController() {
+        let controller = ProfileController()
+        controller.backend()
+        self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    func pushToController(viewController: UIViewController) {
+        self.navigationController?.pushViewController(viewController, animated: true)
+    }
+    
     func simpleAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: nil)
+    }
+    
+    func customActionWithCancel(title: String, message: String, onConfirm: @escaping () -> Void) -> UIAlertController {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Yes, continue", style: .default) { _ in onConfirm() })
+        alert.addAction(UIAlertAction(title: "No, cancel", style: .cancel))
+        return alert
     }
     
 }
