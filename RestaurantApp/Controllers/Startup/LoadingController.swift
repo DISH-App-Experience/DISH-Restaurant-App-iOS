@@ -96,7 +96,7 @@ class LoadingController: UIViewController {
             moveToTabbar()
         } else {
             hideLoading()
-            moveToController(controller: WelcomeController())
+            moveToWelcomeController()
         }
     }
 
