@@ -66,6 +66,12 @@ extension UIViewController {
         self.navigationController?.pushViewController(controller, animated: true)
     }
     
+    func moveToMenuPage() {
+        if let tabbar = tabBarController {
+            tabbar.selectedIndex = 1
+        }
+    }
+    
     func pushToController(viewController: UIViewController) {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
