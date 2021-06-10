@@ -9,13 +9,19 @@ import UIKit
 import Firebase
 import SDWebImage
 
-class HomeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+class HomeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource {
     
     var menutItems = [MenuItem]()
     
     var actions = [HomeAction]() {
         didSet {
             actionCollectionView.reloadData()
+        }
+    }
+    
+    var infoActions = [InfoAction]() {
+        didSet {
+            infoTableView.reloadData()
         }
     }
     
@@ -150,6 +156,24 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return collectionView
     }()
     
+    let infoTitle : UILabel = {
+        let label = UILabel()
+        label.text = "App Info"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.boldSystemFont(ofSize: 15)
+        label.textColor = Restaurant.shared.textColor
+        label.textAlignment = NSTextAlignment.left
+        return label
+    }()
+    
+    let infoTableView : UITableView = {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.register(HomeInfoCell.self, forCellReuseIdentifier: HomeInfoCell.identifier)
+        tableView.backgroundColor = UIColor.white
+        return tableView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -168,6 +192,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         backend()
         setupActions()
+        setupInfoActions()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -180,7 +205,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         super.updateViewConstraints()
         
         view.addSubview(scrollView)
-        scrollView.contentSize = CGSize(width: view.frame.size.width, height: 1000)
+        scrollView.contentSize = CGSize(width: view.frame.size.width, height: 850)
         scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         scrollView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -264,6 +289,20 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         actionCollectionView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
         actionCollectionView.heightAnchor.constraint(equalToConstant: 88).isActive = true
         
+        scrollView.addSubview(infoTitle)
+        infoTitle.topAnchor.constraint(equalTo: actionCollectionView.bottomAnchor, constant: 36).isActive = true
+        infoTitle.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
+        infoTitle.widthAnchor.constraint(equalToConstant: 130).isActive = true
+        infoTitle.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        
+        scrollView.addSubview(infoTableView)
+        infoTableView.delegate = self
+        infoTableView.dataSource = self
+        infoTableView.topAnchor.constraint(equalTo: infoTitle.bottomAnchor, constant: 15).isActive = true
+        infoTableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
+        infoTableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
+        infoTableView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        
         view.addSubview(statusBarView)
         statusBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -301,7 +340,18 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
             controller.item = self.menutItems[indexPath.row]
             self.navigationController?.pushViewController(controller, animated: true)
         } else {
-            print("selected action")
+            switch self.actions[indexPath.row].title! {
+            case "Call Us":
+                callUs()
+            case "About Us":
+                pushToController(viewController: AboutUsController())
+            case "Locations":
+                pushToController(viewController: LocationsController())
+            case "Gallery":
+                pushToController(viewController: GalleryController())
+            default:
+                print("other")
+            }
         }
     }
     
@@ -313,6 +363,39 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
             return CGSize(width: 159, height: 88)
         } else {
             return CGSize(width: 10, height: 10)
+        }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return infoActions.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = infoTableView.dequeueReusableCell(withIdentifier: HomeInfoCell.identifier, for: indexPath) as! HomeInfoCell
+        cell.action = self.infoActions[indexPath.row]
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 45
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        switch self.infoActions[indexPath.row].title! {
+        case "Rate Us":
+            print("rate us")
+        case "Terms & Conditions":
+            print("terms and conditions")
+        case "About Us":
+            print("about us")
+        case "Contact Us":
+            print("contact us")
+        default:
+            print("other")
         }
     }
     
@@ -381,7 +464,34 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
+    private func setupInfoActions() {
+        infoActions.removeAll()
+        
+        let rateUs = InfoAction()
+        rateUs.title = "Rate Us"
+        rateUs.image = UIImage(named: "star")!
+        
+        let terms = InfoAction()
+        terms.title = "Terms & Conditions"
+        terms.image = UIImage(named: "book")!
+        
+        let aboutUs = InfoAction()
+        aboutUs.title = "About Us"
+        aboutUs.image = UIImage(named: "information")!
+        
+        let contactUs = InfoAction()
+        contactUs.title = "Contact Us"
+        contactUs.image = UIImage(named: "mail")!
+        
+        infoActions.append(rateUs)
+        infoActions.append(terms)
+        infoActions.append(aboutUs)
+        infoActions.append(contactUs)
+    }
+    
     private func setupActions() {
+        self.actions.removeAll()
+        
         let callUs = HomeAction()
         callUs.title = "Call Us"
         callUs.image = UIImage(named: "call")!
@@ -394,9 +504,34 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         aboutUs.title = "About Us"
         aboutUs.image = UIImage(named: "info")!
         
-        actions.append(callUs)
-        actions.append(locations)
-        actions.append(aboutUs)
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("features").child("imageGallery").observe(DataEventType.value) { snapshot in
+            if let value = snapshot.value as? Bool {
+                if value {
+                    let gallery = HomeAction()
+                    gallery.title = "Gallery"
+                    gallery.image = UIImage(named: "camera")!
+                    
+                    self.actions.append(callUs)
+                    self.actions.append(locations)
+                    self.actions.append(aboutUs)
+                    self.actions.append(gallery)
+                } else {
+                    self.actions.append(callUs)
+                    self.actions.append(locations)
+                    self.actions.append(aboutUs)
+                }
+            }
+        }
+    }
+    
+    private func callUs() {
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("phoneNumber").observe(DataEventType.value) { snapshot in
+            if let value = snapshot.value as? String {
+                if let url = URL(string: "tel://\(value)") {
+                  UIApplication.shared.openURL(url)
+                }
+            }
+        }
     }
     
     @objc func profileImagePressed() {
