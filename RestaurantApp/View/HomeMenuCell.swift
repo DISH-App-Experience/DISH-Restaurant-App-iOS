@@ -74,7 +74,7 @@ class HomeMenuCell: UICollectionViewCell {
         addSubview(menuView)
         menuView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         menuView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        menuView.rightAnchor.constraint(equalTo: rightAnchor, constant: 7.5).isActive = true
+        menuView.rightAnchor.constraint(equalTo: rightAnchor, constant: -7.5).isActive = true
         menuView.leftAnchor.constraint(equalTo: leftAnchor, constant: 7.5).isActive = true
         
         menuView.addSubview(imageView)
