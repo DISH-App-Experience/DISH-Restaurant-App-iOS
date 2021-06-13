@@ -26,7 +26,7 @@ class HomeActionCell: UICollectionViewCell {
     
     let menuView : UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(hexString: "#F2F2F2")
+        view.backgroundColor = Restaurant.shared.secondaryBackground
         view.layer.cornerRadius = 10
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -43,11 +43,10 @@ class HomeActionCell: UICollectionViewCell {
     
     let titleLabel : UILabel = {
         let label = UILabel()
-        label.text = "Random"
         label.font = UIFont.boldSystemFont(ofSize: 16)
         label.textAlignment = NSTextAlignment.left
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Restaurant.shared.textColorOnButton
+        label.textColor = Restaurant.shared.textColor
         return label
     }()
     

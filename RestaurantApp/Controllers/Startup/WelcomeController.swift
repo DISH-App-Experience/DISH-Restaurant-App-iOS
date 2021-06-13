@@ -20,7 +20,7 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
     let logoImageView : UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
-        imageView.backgroundColor = UIColor(hexString: "#F2F2F2")
+        imageView.backgroundColor = Restaurant.shared.secondaryBackground
         imageView.layer.cornerRadius = 20
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
