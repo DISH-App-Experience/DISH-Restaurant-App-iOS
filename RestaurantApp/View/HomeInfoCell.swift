@@ -27,7 +27,7 @@ class HomeInfoCell: UITableViewCell {
     let iconImageView : UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .red
+        imageView.backgroundColor = UIColor.clear
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
         return imageView
     }()

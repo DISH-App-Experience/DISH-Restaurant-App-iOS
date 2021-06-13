@@ -22,6 +22,8 @@ class Restaurant {
     
     var textColorOnButton = UIColor()
     
+    var secondaryBackground = UIColor()
+    
     var logo = String()
     
     var name = String()

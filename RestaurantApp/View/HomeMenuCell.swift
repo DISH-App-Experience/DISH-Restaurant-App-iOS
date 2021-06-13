@@ -30,7 +30,7 @@ class HomeMenuCell: UICollectionViewCell {
     
     let menuView : UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(hexString: "#F2F2F2")
+        view.backgroundColor = Restaurant.shared.secondaryBackground
         view.layer.cornerRadius = 10
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -40,7 +40,7 @@ class HomeMenuCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
-        imageView.backgroundColor = UIColor(hexString: "#F2F2F2")
+        imageView.backgroundColor = Restaurant.shared.secondaryBackground
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 30
         return imageView

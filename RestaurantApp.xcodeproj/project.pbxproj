@@ -43,6 +43,8 @@
 		78586224266D3AAD00FBC0DE /* SignUpController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586223266D3AAD00FBC0DE /* SignUpController.swift */; };
 		78586228266D3B8E00FBC0DE /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586227266D3B8E00FBC0DE /* TabBarController.swift */; };
 		7858622A266D425B00FBC0DE /* SignUpInformationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78586229266D425B00FBC0DE /* SignUpInformationController.swift */; };
+		78781A9F2672972000878406 /* ImageGalleryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78781A9E2672972000878406 /* ImageGalleryCell.swift */; };
+		78781AA12672979200878406 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78781AA02672979200878406 /* Photo.swift */; };
 		7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5EE266E85F000A05B41 /* MenuController.swift */; };
 		7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5F0266E85FB00A05B41 /* RewardsController.swift */; };
 		7897F5F3266E860700A05B41 /* ActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5F2266E860700A05B41 /* ActionController.swift */; };
@@ -115,6 +117,8 @@
 		78586227266D3B8E00FBC0DE /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		78586229266D425B00FBC0DE /* SignUpInformationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpInformationController.swift; sourceTree = "<group>"; };
 		7858622B266DF0A000FBC0DE /* RestaurantApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RestaurantApp.entitlements; sourceTree = "<group>"; };
+		78781A9E2672972000878406 /* ImageGalleryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageGalleryCell.swift; sourceTree = "<group>"; };
+		78781AA02672979200878406 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		7897F5EE266E85F000A05B41 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		7897F5F0266E85FB00A05B41 /* RewardsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsController.swift; sourceTree = "<group>"; };
 		7897F5F2266E860700A05B41 /* ActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionController.swift; sourceTree = "<group>"; };
@@ -169,6 +173,7 @@
 				7844B749267125C40072A963 /* HomeMenuCell.swift */,
 				7844B74D26714D3C0072A963 /* HomeActionCell.swift */,
 				782487592671DE3A00040874 /* HomeInfoCell.swift */,
+				78781A9E2672972000878406 /* ImageGalleryCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -250,6 +255,7 @@
 				7844B747267124C00072A963 /* MenuItem.swift */,
 				780537ED2671547C000343B5 /* HomeAction.swift */,
 				782487572671DDD600040874 /* InfoAction.swift */,
+				78781AA02672979200878406 /* Photo.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -612,6 +618,8 @@
 				78419356266D0C79001E246E /* WelcomeController.swift in Sources */,
 				78586228266D3B8E00FBC0DE /* TabBarController.swift in Sources */,
 				7858621B266D17AE00FBC0DE /* MainButton.swift in Sources */,
+				78781AA12672979200878406 /* Photo.swift in Sources */,
+				78781A9F2672972000878406 /* ImageGalleryCell.swift in Sources */,
 				7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */,
 				782487542671DAB900040874 /* LocationsController.swift in Sources */,
 				7858622A266D425B00FBC0DE /* SignUpInformationController.swift in Sources */,

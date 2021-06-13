@@ -7,11 +7,15 @@
 
 import UIKit
 import Firebase
+import MessageUI
 import SDWebImage
 
-class HomeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource {
+class HomeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
     var menutItems = [MenuItem]()
+    
+    // ADD RESTAURANT WEBSITEBELOW TO ADD ACCESS
+    let websiteURL = ""
     
     var actions = [HomeAction]() {
         didSet {
@@ -387,13 +391,20 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch self.infoActions[indexPath.row].title! {
         case "Rate Us":
-            print("rate us")
-        case "Terms & Conditions":
-            print("terms and conditions")
+            // ADD APP ID AFTER THE FORWARD SLASH ON THE URL BELOW TO CONNECT TO RATINGS!!
+            if let url = URL(string: "itms-apps://itunes.apple.com/app/") {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        case "Our Website":
+            // ADD RESTAURANT WEBSITE TS AND CS BELOW TO ADD ACCESS
+            let websiteURL = ""
+            if let url = URL(string: websiteURL), UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+            }
         case "About Us":
-            print("about us")
+            pushToController(viewController: AboutUsController())
         case "Contact Us":
-            print("contact us")
+            openMail()
         default:
             print("other")
         }
@@ -472,7 +483,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         rateUs.image = UIImage(named: "star")!
         
         let terms = InfoAction()
-        terms.title = "Terms & Conditions"
+        terms.title = "Our Website"
         terms.image = UIImage(named: "book")!
         
         let aboutUs = InfoAction()
@@ -534,6 +545,18 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
+    private func openMail() {
+        guard MFMailComposeViewController.canSendMail() else {
+            simpleAlert(title: "Error", message: "Cannot send mail. Please download the Apple Mail App!")
+            return
+        }
+        let email = "jorgejaden@gmail.com"
+        let composer = MFMailComposeViewController()
+        composer.mailComposeDelegate = self
+        composer.setToRecipients([email])
+        self.present(composer, animated: true)
+    }
+    
     @objc func profileImagePressed() {
         moveToProfileController()
     }
@@ -541,5 +564,23 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     @objc func menuButtonPressed() {
         moveToMenuPage()
     }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+            if let _ = error {
+                controller.dismiss(animated: true, completion: nil)
+                return
+            }
+            switch result {
+            case .cancelled:
+                break
+            case .failed:
+                break
+            case .saved:
+                break
+            case .sent:
+                break
+            }
+            controller.dismiss(animated: true, completion: nil)
+        }
 
 }

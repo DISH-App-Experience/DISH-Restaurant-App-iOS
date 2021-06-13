@@ -13,7 +13,6 @@ class ProfileCell: UITableViewCell {
     
     let titleLabel : UILabel = {
         let label = UILabel()
-        label.text = "ddf"
         label.font = UIFont.boldSystemFont(ofSize: 15)
         label.textAlignment = NSTextAlignment.left
         label.textColor = Restaurant.shared.textColorOnButton
@@ -32,7 +31,7 @@ class ProfileCell: UITableViewCell {
     
     let sepView : UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(hexString: "F2F2F2")
+        view.backgroundColor = Restaurant.shared.secondaryBackground
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()

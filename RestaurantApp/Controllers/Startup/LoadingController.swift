@@ -73,8 +73,13 @@ class LoadingController: UIViewController {
                                                 Database.database().reference().child("Apps").child(id).child("theme").child("themeColorOnButton").observe(DataEventType.value) { snapshot in
                                                     if let value = snapshot.value as? String {
                                                         Restaurant.shared.textColorOnButton = UIColor(hexString: value)
-                                                        self.hideLoading()
-                                                        self.completion()
+                                                        Database.database().reference().child("Apps").child(id).child("theme").child("secondaryBackground").observe(DataEventType.value) { snapshot in
+                                                            if let value = snapshot.value as? String {
+                                                                Restaurant.shared.secondaryBackground = UIColor(hexString: value)
+                                                                self.hideLoading()
+                                                                self.completion()
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
