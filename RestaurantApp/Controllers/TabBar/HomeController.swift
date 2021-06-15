@@ -340,9 +340,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == self.menuCollectionView {
-            let controller = MenuItemController()
-            controller.item = self.menutItems[indexPath.row]
-            self.navigationController?.pushViewController(controller, animated: true)
+            showMenuItem(menuItem: self.menutItems[indexPath.row])
         } else {
             switch self.actions[indexPath.row].title! {
             case "Call Us":
@@ -361,7 +359,6 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == self.menuCollectionView {
-            print("hi")
             return CGSize(width: 128, height: 130)
         } else if collectionView == self.actionCollectionView {
             return CGSize(width: 159, height: 88)
@@ -465,7 +462,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 let item = MenuItem()
                 item.title = value["title"] as? String
                 item.desc = value["description"] as? String
-                item.price = value["price"] as? Int
+                item.price = value["price"] as? Double
                 item.imageUrl = value["image"] as? String
                 item.timestamp = value["time"] as? Int
                 self.menutItems.append(item)
@@ -539,7 +536,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("phoneNumber").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? String {
                 if let url = URL(string: "tel://\(value)") {
-                  UIApplication.shared.openURL(url)
+                  UIApplication.shared.open(url)
                 }
             }
         }
@@ -578,6 +575,8 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
             case .saved:
                 break
             case .sent:
+                break
+            default:
                 break
             }
             controller.dismiss(animated: true, completion: nil)

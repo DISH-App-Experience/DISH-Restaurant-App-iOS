@@ -13,11 +13,15 @@ class MenuItem: NSObject {
     
     var desc : String?
     
-    var price : Int?
+    var price : Double?
     
     var imageUrl : String?
     
     var timestamp : Int?
+    
+    var category : String?
+    
+    var key : String?
     
     
 
