@@ -105,9 +105,9 @@ class GalleryController: UIViewController, UICollectionViewDelegate, UICollectio
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-//        let controller = ViewPhotoController()
-//        controller.photo = photos[indexPath.row]
-//        navigationController?.pushViewController(controller, animated: true)
+        let controller = ViewPhotoController()
+        controller.photo = photos[indexPath.row]
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

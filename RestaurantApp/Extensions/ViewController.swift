@@ -76,6 +76,13 @@ extension UIViewController {
         self.navigationController?.pushViewController(viewController, animated: true)
     }
     
+    func showMenuItem(menuItem: MenuItem) {
+        let controller = MenuItemController()
+        controller.item = menuItem
+        controller.modalPresentationStyle = UIModalPresentationStyle.popover
+        self.present(controller, animated: true, completion: nil)
+    }
+    
     func simpleAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
@@ -87,6 +94,12 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: "Yes, continue", style: .default) { _ in onConfirm() })
         alert.addAction(UIAlertAction(title: "No, cancel", style: .cancel))
         return alert
+    }
+    
+    func estimateFrameForText(text: String) -> CGRect {
+        let size = CGSize(width: view.bounds.size.width - 48, height: CGFloat())
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], context: nil)
     }
     
 }
