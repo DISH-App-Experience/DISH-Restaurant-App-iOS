@@ -9,6 +9,7 @@ import UIKit
 import Firebase
 import MessageUI
 import SDWebImage
+import NotificationCenter
 
 class HomeController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UITableViewDelegate, UITableViewDataSource, MFMailComposeViewControllerDelegate {
     
@@ -180,6 +181,14 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+//        let notification = UILocalNotification()
+//        notification.alertTitle = "Happy Birthday!"
+//        notification.alertBody = "This is your daily notification."
+//        notification.timeZone = NSTimeZone.local
+//        notification.fireDate = Date().addingTimeInterval(1800)
+//        notification.repeatInterval = .day
+//        UIApplication.shared.scheduleLocalNotification(notification)
         
         view.backgroundColor = Restaurant.shared.backgroundColor
         
