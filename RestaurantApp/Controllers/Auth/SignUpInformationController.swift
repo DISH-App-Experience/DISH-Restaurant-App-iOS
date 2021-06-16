@@ -124,8 +124,25 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
         })
     }
     
-    private func birthdayNotification(withDate: Date) {
-        // birthday notification
+    private func birthdayNotification(withDate date: Date) {
+        
+        let notificationCenter = UNUserNotificationCenter.current()
+        
+        let notification = UNMutableNotificationContent()
+        notification.title = "Important Message"
+        notification.body = "It's a snow day tomorrow. No school busses."
+        notification.categoryIdentifier = "alarm"
+        notification.userInfo = ["additionalData": "Additional data can also be provided"]
+        notification.sound = UNNotificationSound.default
+        
+        var dateComponents = DateComponents()
+        dateComponents.hour = 8
+        dateComponents.minute = 0
+        
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 10, repeats: true)
+        
+        let notificationRequest = UNNotificationRequest(identifier: UUID().uuidString, content: notification, trigger: trigger)
+        notificationCenter.add(notificationRequest)
     }
     
     private func pickerViewSetup() {
