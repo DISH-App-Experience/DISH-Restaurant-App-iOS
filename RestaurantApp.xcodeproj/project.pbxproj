@@ -15,11 +15,12 @@
 		7809887D266F3F0D0094306C /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7809887C266F3F0D0094306C /* ProfileCell.swift */; };
 		7809887F266F42680094306C /* ProfileInformationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7809887E266F42680094306C /* ProfileInformationController.swift */; };
 		78098883266F45D70094306C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78098882266F45D70094306C /* User.swift */; };
-		782487522671DA5100040874 /* AboutUsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487512671DA5100040874 /* AboutUsController.swift */; };
 		782487542671DAB900040874 /* LocationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487532671DAB900040874 /* LocationsController.swift */; };
 		782487562671DAD600040874 /* GalleryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487552671DAD600040874 /* GalleryController.swift */; };
 		782487582671DDD600040874 /* InfoAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487572671DDD600040874 /* InfoAction.swift */; };
 		7824875A2671DE3A00040874 /* HomeInfoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487592671DE3A00040874 /* HomeInfoCell.swift */; };
+		782D983E267E00A800358A2E /* AboutUs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782D983D267E00A800358A2E /* AboutUs.swift */; };
+		782D9840267E08D800358A2E /* ScanController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782D983F267E08D800358A2E /* ScanController.swift */; };
 		78419352266D0C79001E246E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419351266D0C79001E246E /* AppDelegate.swift */; };
 		78419354266D0C79001E246E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419353266D0C79001E246E /* SceneDelegate.swift */; };
 		78419356266D0C79001E246E /* WelcomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78419355266D0C79001E246E /* WelcomeController.swift */; };
@@ -88,11 +89,12 @@
 		7809887C266F3F0D0094306C /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		7809887E266F42680094306C /* ProfileInformationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInformationController.swift; sourceTree = "<group>"; };
 		78098882266F45D70094306C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		782487512671DA5100040874 /* AboutUsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUsController.swift; sourceTree = "<group>"; };
 		782487532671DAB900040874 /* LocationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsController.swift; sourceTree = "<group>"; };
 		782487552671DAD600040874 /* GalleryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryController.swift; sourceTree = "<group>"; };
 		782487572671DDD600040874 /* InfoAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAction.swift; sourceTree = "<group>"; };
 		782487592671DE3A00040874 /* HomeInfoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeInfoCell.swift; sourceTree = "<group>"; };
+		782D983D267E00A800358A2E /* AboutUs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutUs.swift; sourceTree = "<group>"; };
+		782D983F267E08D800358A2E /* ScanController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanController.swift; sourceTree = "<group>"; };
 		7841934E266D0C79001E246E /* RestaurantApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RestaurantApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		78419351266D0C79001E246E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78419353266D0C79001E246E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -323,7 +325,6 @@
 				782487552671DAD600040874 /* GalleryController.swift */,
 				78AA0E722678F8870055E09C /* ViewPhotoController.swift */,
 				782487532671DAB900040874 /* LocationsController.swift */,
-				782487512671DA5100040874 /* AboutUsController.swift */,
 				7844B74B26714AAE0072A963 /* MenuItemController.swift */,
 				78098879266F3DFD0094306C /* ProfileController.swift */,
 				7809887E266F42680094306C /* ProfileInformationController.swift */,
@@ -331,6 +332,8 @@
 				7897F5F4266E860F00A05B41 /* ReservationController.swift */,
 				7897F5EE266E85F000A05B41 /* MenuController.swift */,
 				7897F5F0266E85FB00A05B41 /* RewardsController.swift */,
+				782D983F267E08D800358A2E /* ScanController.swift */,
+				782D983D267E00A800358A2E /* AboutUs.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -644,17 +647,18 @@
 				78878E8B26792082000A36B8 /* MenuCategoryCell.swift in Sources */,
 				7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */,
 				782487542671DAB900040874 /* LocationsController.swift in Sources */,
+				782D9840267E08D800358A2E /* ScanController.swift in Sources */,
 				7858622A266D425B00FBC0DE /* SignUpInformationController.swift in Sources */,
 				780537EE2671547C000343B5 /* HomeAction.swift in Sources */,
 				78419352266D0C79001E246E /* AppDelegate.swift in Sources */,
 				7844B74A267125C40072A963 /* HomeMenuCell.swift in Sources */,
 				7844B74C26714AAF0072A963 /* MenuItemController.swift in Sources */,
+				782D983E267E00A800358A2E /* AboutUs.swift in Sources */,
 				782487582671DDD600040874 /* InfoAction.swift in Sources */,
 				7809887F266F42680094306C /* ProfileInformationController.swift in Sources */,
 				7809887A266F3DFD0094306C /* ProfileController.swift in Sources */,
 				78419354266D0C79001E246E /* SceneDelegate.swift in Sources */,
 				78419384266D0E87001E246E /* LoadingController.swift in Sources */,
-				782487522671DA5100040874 /* AboutUsController.swift in Sources */,
 				7844B74E26714D3C0072A963 /* HomeActionCell.swift in Sources */,
 				78A5B93D267923AD00B518C2 /* MenuItemCell.swift in Sources */,
 				7858621D266D1A3700FBC0DE /* UIButton.swift in Sources */,

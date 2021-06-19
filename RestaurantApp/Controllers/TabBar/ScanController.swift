@@ -1,18 +1,18 @@
 //
-//  AboutUsController.swift
+//  ScanController.swift
 //  RestaurantApp
 //
-//  Created by JJ Zapata on 6/10/21.
+//  Created by JJ Zapata on 6/19/21.
 //
 
 import UIKit
 
-class AboutUsController: UIViewController {
+class ScanController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = Restaurant.shared.backgroundColor
+        view.backgroundColor = .red
 
         // Do any additional setup after loading the view.
     }

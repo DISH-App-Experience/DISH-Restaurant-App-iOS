@@ -28,4 +28,6 @@ class Restaurant {
     
     var name = String()
     
+    var restarantDesc = String()
+    
 }

@@ -83,6 +83,11 @@ extension UIViewController {
         self.present(controller, animated: true, completion: nil)
     }
     
+    func popAboutUsController() {
+        let controller = AboutUs()
+        self.present(controller, animated: true, completion: nil)
+    }
+    
     func simpleAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))

@@ -355,7 +355,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
             case "Call Us":
                 callUs()
             case "About Us":
-                pushToController(viewController: AboutUsController())
+                popAboutUsController()
             case "Locations":
                 pushToController(viewController: LocationsController())
             case "Gallery":
@@ -408,7 +408,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 UIApplication.shared.open(url)
             }
         case "About Us":
-            pushToController(viewController: AboutUsController())
+            popAboutUsController()
         case "Contact Us":
             openMail()
         default:

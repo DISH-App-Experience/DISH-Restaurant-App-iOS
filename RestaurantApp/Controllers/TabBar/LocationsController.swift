@@ -119,7 +119,7 @@ class LocationsController: UIViewController, CLLocationManagerDelegate, MKMapVie
         ]
         let placemark = MKPlacemark(coordinate: coordinates, addressDictionary: nil)
         let mapItem = MKMapItem(placemark: placemark)
-        mapItem.name = "sdfsfsd"
+        mapItem.name = Restaurant.shared.name
         mapItem.openInMaps(launchOptions: options)
         
         //        let address = "\(streetAddressTF.text!), \(cityTF.text!), \(stateTF.text!) \(zipcodeTF.text!)"
