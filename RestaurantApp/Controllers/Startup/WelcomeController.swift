@@ -64,6 +64,7 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
     let emailButton : MainButton = {
         let button = MainButton()
         button.backgroundColor = Restaurant.shared.themeColor
+        button.setTitleColor(Restaurant.shared.textColorOnButton, for: UIControl.State.normal)
         button.addTarget(self, action: #selector(emailButtonPressed), for: UIControl.Event.touchUpInside)
         return button
     }()

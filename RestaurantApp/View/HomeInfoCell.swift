@@ -28,7 +28,8 @@ class HomeInfoCell: UITableViewCell {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.backgroundColor = UIColor.clear
-        imageView.contentMode = UIView.ContentMode.scaleAspectFill
+        imageView.tintColor = Restaurant.shared.textColor
+        imageView.contentMode = UIView.ContentMode.scaleAspectFit
         return imageView
     }()
     
@@ -46,8 +47,8 @@ class HomeInfoCell: UITableViewCell {
         selectionStyle = UITableViewCell.SelectionStyle.none
         
         addSubview(iconImageView)
-        iconImageView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        iconImageView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        iconImageView.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        iconImageView.heightAnchor.constraint(equalToConstant: 25).isActive = true
         iconImageView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
         iconImageView.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         

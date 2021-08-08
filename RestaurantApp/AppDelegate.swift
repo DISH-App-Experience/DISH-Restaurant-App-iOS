@@ -16,6 +16,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
+        print("🚀 Launched! 🚀")
+        
         // Firebase Configuration
         FirebaseApp.configure()
         
@@ -41,6 +43,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             }
         }
         center.delegate = self
+        
+        // Log Analytics
+        let root = Database.database().reference().child("Analytics").child("appSessions")
+        let key = root.childByAutoId().key
+        let params : [String : Any] = [
+            "userId" : Auth.auth().currentUser?.uid ?? "newUser",
+            "restaurantId" : Restaurant.shared.restaurantId,
+            "time" : Int(Date().timeIntervalSince1970)
+        ]
+        let feed : [String : Any] = [
+            key! : params
+        ]
+        root.updateChildValues(feed)
+        print("success logging analytics")
         
         return true
     }

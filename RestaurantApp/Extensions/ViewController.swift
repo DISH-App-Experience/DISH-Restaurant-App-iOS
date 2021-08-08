@@ -107,4 +107,37 @@ extension UIViewController {
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], context: nil)
     }
     
+    func combineDateWithTime(date: Date, time: Date) -> Date? {
+        let calendar = NSCalendar.current
+        
+        let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
+        let timeComponents = calendar.dateComponents([.hour, .minute, .second], from: time)
+        
+        var mergedComponents = DateComponents()
+        mergedComponents.year = dateComponents.year
+        mergedComponents.month = dateComponents.month
+        mergedComponents.day = dateComponents.day
+        mergedComponents.hour = timeComponents.hour
+        mergedComponents.minute = timeComponents.minute
+        mergedComponents.second = timeComponents.second
+        
+        return calendar.date(from: mergedComponents)
+    }
+    
+    func isLightColor(color: UIColor) -> Bool {
+       var white: CGFloat = 0.0
+       color.getWhite(&white, alpha: nil)
+
+       var isLight = false
+
+       if white >= 0.5 {
+           isLight = true
+           NSLog("color is light: %f", white)
+       } else {
+          NSLog("Color is dark: %f", white)
+       }
+
+       return isLight
+    }
+    
 }

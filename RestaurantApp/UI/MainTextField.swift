@@ -10,8 +10,11 @@ import UIKit
 
 class MainTextField: UITextField {
     
-    init(placeholderString: String) {
-        super.init(frame: .zero)
+    let insets : UIEdgeInsets
+    
+    init(insets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 12, bottom: 0, right: 12), placeholderString: String) {
+        self.insets = insets
+        super.init(frame: CGRect.zero)
         
         textColor = Restaurant.shared.textColor
         
@@ -22,7 +25,7 @@ class MainTextField: UITextField {
         
         backgroundColor = UIColor(hexString: "F2F2F2")
         
-        borderStyle = BorderStyle.roundedRect
+        borderStyle = BorderStyle.none
         
         translatesAutoresizingMaskIntoConstraints = false
         
@@ -31,9 +34,16 @@ class MainTextField: UITextField {
         font = UIFont.systemFont(ofSize: 15)
     }
     
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: insets)
+    }
+
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        return bounds.inset(by: insets)
+    }
+
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        fatalError("error fatal")
+        fatalError("init(coder:) has not yet been implemented")
     }
     
 }
