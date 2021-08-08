@@ -14,9 +14,10 @@ enum MenuLayout {
 
 class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICollectionViewDelegate, UICollectionViewDataSource, UITableViewDelegate, UITableViewDataSource {
     
-    var layout = MenuLayout.table {
+    var layout : MenuLayout = MenuLayout.table {
         didSet {
             if layout == MenuLayout.table {
+                print("moving to table")
                 UIView.animate(withDuration: 0.5) {
                     self.menuCollectionView!.alpha = 0
                 } completion: { completion in
@@ -83,6 +84,8 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         
         backend()
         
+        analytics()
+        
         navigationController?.navigationBar.isHidden = false
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.tintColor = Restaurant.shared.themeColor
@@ -145,14 +148,19 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         }
     }
     
-    private func backend() {
-        if UserDefaults.standard.string(forKey: "menuLayout") == "table" {
-            layout = MenuLayout.table
-        } else {
-            layout = MenuLayout.grid
-        }
-        checkCategories()
-        checkItems()
+    private func analytics() {
+        let root = Database.database().reference().child("Analytics").child("openedMenus")
+        let key = root.childByAutoId().key
+        let params : [String : Any] = [
+            "userId" : Auth.auth().currentUser?.uid ?? "newUser",
+            "restaurantId" : Restaurant.shared.restaurantId,
+            "time" : Int(Date().timeIntervalSince1970)
+        ]
+        let feed : [String : Any] = [
+            key! : params
+        ]
+        root.updateChildValues(feed)
+        print("success logging analytics")
     }
     
     private func checkCategories() {
@@ -212,6 +220,11 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
             layout = MenuLayout.table
             UserDefaults.standard.setValue("table", forKey: "menuLayout")
         }
+    }
+    
+    private func backend() {
+        checkCategories()
+        checkItems()
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {

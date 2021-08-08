@@ -15,7 +15,7 @@ class ProfileCell: UITableViewCell {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 15)
         label.textAlignment = NSTextAlignment.left
-        label.textColor = Restaurant.shared.textColorOnButton
+        label.textColor = Restaurant.shared.textColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()

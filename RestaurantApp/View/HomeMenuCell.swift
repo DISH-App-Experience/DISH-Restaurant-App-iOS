@@ -52,7 +52,7 @@ class HomeMenuCell: UICollectionViewCell {
         label.font = UIFont.boldSystemFont(ofSize: 10)
         label.textAlignment = NSTextAlignment.left
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.textColor = Restaurant.shared.textColorOnButton
+        label.textColor = Restaurant.shared.textColor
         return label
     }()
     

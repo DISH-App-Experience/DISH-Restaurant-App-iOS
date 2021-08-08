@@ -35,12 +35,14 @@ class ProfileInformationController: UIViewController, UITextFieldDelegate, UIPic
     let emailTextfield : MainTextField = {
         let textField = MainTextField(placeholderString: "Write Here")
         textField.keyboardType = UIKeyboardType.emailAddress
+        textField.backgroundColor = Restaurant.shared.secondaryBackground
         return textField
     }()
     
     let mainButton : MainButton = {
         let button = MainButton()
         button.backgroundColor = Restaurant.shared.themeColor
+        button.setTitleColor(Restaurant.shared.textColorOnButton, for: UIControl.State.normal)
         button.setTitle("Save", for: UIControl.State.normal)
         button.addTarget(self, action: #selector(mainButtonPressed), for: UIControl.Event.touchUpInside)
         return button
@@ -132,6 +134,7 @@ class ProfileInformationController: UIViewController, UITextFieldDelegate, UIPic
     
     private func dateTFP() {
         birthdayPicker.datePickerMode = UIDatePicker.Mode.date
+        birthdayPicker.frame.size = CGSize(width: 0, height: 250)
         birthdayPicker.addTarget(self, action: #selector(birthdayPickerChanged), for: UIControl.Event.valueChanged)
         emailTextfield.inputView = birthdayPicker
     }

@@ -28,6 +28,7 @@ class TabBarController: UITabBarController {
         super.viewDidLoad()
         
         tabBar.tintColor = Restaurant.shared.themeColor
+        tabBar.barTintColor = Restaurant.shared.secondaryBackground
         
         hidesBottomBarWhenPushed = true
         

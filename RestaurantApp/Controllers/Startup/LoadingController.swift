@@ -79,8 +79,19 @@ class LoadingController: UIViewController {
                                                                 Database.database().reference().child("Apps").child(id).child("about").child("aboutUs").observe(DataEventType.value) { snapshot in
                                                                     if let value = snapshot.value as? String {
                                                                         Restaurant.shared.restarantDesc = value
-                                                                        self.hideLoading()
-                                                                        self.completion()
+                                                                        if self.isLightColor(color: Restaurant.shared.backgroundColor) {
+                                                                            UIApplication.shared.windows.forEach { window in
+                                                                                window.overrideUserInterfaceStyle = UIUserInterfaceStyle.light
+                                                                            }
+                                                                            self.hideLoading()
+                                                                            self.completion()
+                                                                        } else {
+                                                                            UIApplication.shared.windows.forEach { window in
+                                                                                window.overrideUserInterfaceStyle = UIUserInterfaceStyle.dark
+                                                                            }
+                                                                            self.hideLoading()
+                                                                            self.completion()
+                                                                        }
                                                                     }
                                                                 }
                                                             }

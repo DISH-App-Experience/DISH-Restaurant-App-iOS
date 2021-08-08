@@ -4,6 +4,7 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.4.0)
   - AppAuth/Core (1.4.0)
   - AppAuth/ExternalUserAgent (1.4.0)
+  - BulletinBoard (5.0.0)
   - Firebase/Analytics (7.8.1):
     - Firebase/Core
   - Firebase/Auth (7.8.1):
@@ -108,6 +109,7 @@ PODS:
   - SDWebImage/Core (5.11.1)
 
 DEPENDENCIES:
+  - BulletinBoard
   - Firebase/Analytics
   - Firebase/Auth
   - Firebase/Database
@@ -119,6 +121,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AppAuth
+    - BulletinBoard
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
@@ -141,6 +144,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
+  BulletinBoard: dba77053c2a7b64953f63073f7534165af2edd21
   Firebase: d59ad4129167f9f0d2a4f6c1f0c462254b6002c8
   FirebaseAnalytics: 3b98b563d7d64c07900511198b4805cfd9f9f61c
   FirebaseAuth: 667e576a716f6f9fe31687791406f61135002d47
@@ -161,6 +165,6 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
 
-PODFILE CHECKSUM: b1d3f9549d8d9779ea41c29862f50901a89ab2db
+PODFILE CHECKSUM: d0949b16bcba91deabb088189decf771bb5b51a3
 
 COCOAPODS: 1.10.1

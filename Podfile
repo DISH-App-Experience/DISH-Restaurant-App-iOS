@@ -20,6 +20,8 @@ target 'RestaurantApp' do
   pod 'Firebase/Storage'
 
   pod 'GoogleSignIn'
+  
+  pod 'BulletinBoard'
 
   target 'RestaurantAppTests' do
     inherit! :search_paths

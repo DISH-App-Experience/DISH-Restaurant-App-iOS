@@ -57,8 +57,12 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     let profileImage : UIButton = {
         let button = UIButton()
-        button.backgroundColor = Restaurant.shared.themeColor
-        button.clipsToBounds = true
+        button.backgroundColor = Restaurant.shared.backgroundColor
+        button.clipsToBounds = false
+        button.setImage(UIImage(systemName: "person.crop.circle"), for: UIControl.State.normal)
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.imageView?.tintColor = Restaurant.shared.themeColor
         button.translatesAutoresizingMaskIntoConstraints = false
         button.addTarget(self, action: #selector(profileImagePressed), for: UIControl.Event.touchUpInside)
         button.layer.cornerRadius = 17.5
@@ -127,8 +131,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(HomeMenuCell.self, forCellWithReuseIdentifier: HomeMenuCell.identifier)
-        collectionView.backgroundColor = .red
-        collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundColor = UIColor.clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.alwaysBounceVertical = false
         collectionView.alwaysBounceHorizontal = true
@@ -151,8 +154,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(HomeActionCell.self, forCellWithReuseIdentifier: HomeActionCell.identifier)
-        collectionView.backgroundColor = .red
-        collectionView.backgroundColor = UIColor.white
+        collectionView.backgroundColor = UIColor.clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.alwaysBounceVertical = false
         collectionView.alwaysBounceHorizontal = true
@@ -175,7 +177,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let tableView = UITableView()
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(HomeInfoCell.self, forCellReuseIdentifier: HomeInfoCell.identifier)
-        tableView.backgroundColor = UIColor.white
+        tableView.backgroundColor = UIColor.clear
         return tableView
     }()
     
@@ -339,10 +341,12 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         if collectionView == self.menuCollectionView {
             let cell = menuCollectionView.dequeueReusableCell(withReuseIdentifier: HomeMenuCell.identifier, for: indexPath) as! HomeMenuCell
             cell.menuItem = self.menutItems[indexPath.row]
+            cell.backgroundColor = UIColor.clear
             return cell
         } else {
             let cell = actionCollectionView.dequeueReusableCell(withReuseIdentifier: HomeActionCell.identifier, for: indexPath) as! HomeActionCell
             cell.action = self.actions[indexPath.row]
+            cell.backgroundColor = UIColor.clear
             return cell
         }
     }
@@ -387,6 +391,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = infoTableView.dequeueReusableCell(withIdentifier: HomeInfoCell.identifier, for: indexPath) as! HomeInfoCell
         cell.action = self.infoActions[indexPath.row]
+        cell.backgroundColor = UIColor.clear
         return cell
     }
     
@@ -426,17 +431,17 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
             }
         }
         
-        Database.database().reference().child("Apps").child(id).child("Users").child(Auth.auth().currentUser!.uid).child("gender").observe(DataEventType.value) { snapshot in
-            if let value = snapshot.value as? String {
-                if value != "Male" {
-                    self.profileImage.setImage(UIImage(named: "femaleuser"), for: UIControl.State.normal)
-                } else {
-                    self.profileImage.setImage(UIImage(named: "maleuser"), for: UIControl.State.normal)
-                }
-            } else {
-                self.profileImage.setImage(UIImage(named: "maleuser"), for: UIControl.State.normal)
-            }
-        }
+//        Database.database().reference().child("Apps").child(id).child("Users").child(Auth.auth().currentUser!.uid).child("gender").observe(DataEventType.value) { snapshot in
+//            if let value = snapshot.value as? String {
+//                if value != "Male" {
+//                    self.profileImage.setImage(UIImage(named: "femaleuser"), for: UIControl.State.normal)
+//                } else {
+//                    self.profileImage.setImage(UIImage(named: "maleuser"), for: UIControl.State.normal)
+//                }
+//            } else {
+//                self.profileImage.setImage(UIImage(named: "maleuser"), for: UIControl.State.normal)
+//            }
+//        }
         
         alertImage.sd_setImage(with: URL(string: Restaurant.shared.logo)!, completed: nil)
         
@@ -486,19 +491,19 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         let rateUs = InfoAction()
         rateUs.title = "Rate Us"
-        rateUs.image = UIImage(named: "star")!
+        rateUs.image = UIImage(systemName: "star.fill")!
         
         let terms = InfoAction()
         terms.title = "Our Website"
-        terms.image = UIImage(named: "book")!
+        terms.image = UIImage(systemName: "bookmark.fill")!
         
         let aboutUs = InfoAction()
         aboutUs.title = "About Us"
-        aboutUs.image = UIImage(named: "information")!
+        aboutUs.image = UIImage(systemName: "info.circle.fill")!
         
         let contactUs = InfoAction()
         contactUs.title = "Contact Us"
-        contactUs.image = UIImage(named: "mail")!
+        contactUs.image = UIImage(systemName: "envelope.fill")!
         
         infoActions.append(rateUs)
         infoActions.append(terms)
@@ -511,22 +516,22 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         
         let callUs = HomeAction()
         callUs.title = "Call Us"
-        callUs.image = UIImage(named: "call")!
+        callUs.image = UIImage(systemName: "phone.fill")!
         
         let locations = HomeAction()
         locations.title = "Locations"
-        locations.image = UIImage(named: "pin")!
+        locations.image = UIImage(systemName: "location.fill")!
         
         let aboutUs = HomeAction()
         aboutUs.title = "About Us"
-        aboutUs.image = UIImage(named: "info")!
+        aboutUs.image = UIImage(systemName: "info")!
         
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("features").child("imageGallery").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? Bool {
                 if value {
                     let gallery = HomeAction()
                     gallery.title = "Gallery"
-                    gallery.image = UIImage(named: "camera")!
+                    gallery.image = UIImage(systemName: "camera.fill")!
                     
                     self.actions.append(callUs)
                     self.actions.append(locations)
@@ -541,7 +546,23 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         }
     }
     
+    private func analytics() {
+        let root = Database.database().reference().child("Analytics").child("callFromHome")
+        let key = root.childByAutoId().key
+        let params : [String : Any] = [
+            "userId" : Auth.auth().currentUser?.uid ?? "newUser",
+            "restaurantId" : Restaurant.shared.restaurantId,
+            "time" : Int(Date().timeIntervalSince1970)
+        ]
+        let feed : [String : Any] = [
+            key! : params
+        ]
+        root.updateChildValues(feed)
+        print("success logging analytics")
+    }
+    
     private func callUs() {
+        analytics()
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("phoneNumber").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? String {
                 if let url = URL(string: "tel://\(value)") {

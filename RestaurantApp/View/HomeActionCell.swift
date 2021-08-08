@@ -35,9 +35,10 @@ class HomeActionCell: UICollectionViewCell {
     let imageView : UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = UIView.ContentMode.scaleAspectFill
+        imageView.contentMode = UIView.ContentMode.scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 2
+        imageView.tintColor = Restaurant.shared.textColor
         return imageView
     }()
     

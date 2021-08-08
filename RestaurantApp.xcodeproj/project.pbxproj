@@ -56,6 +56,14 @@
 		78A5B93F267929E500B518C2 /* MenuItemCVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78A5B93E267929E500B518C2 /* MenuItemCVCell.swift */; };
 		78AA0E732678F8870055E09C /* ViewPhotoController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AA0E722678F8870055E09C /* ViewPhotoController.swift */; };
 		78AA0E752678FA9E0055E09C /* Location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AA0E742678FA9E0055E09C /* Location.swift */; };
+		78AE637626B186E100F60E19 /* CreateReservationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AE637526B186E100F60E19 /* CreateReservationController.swift */; };
+		78AE637826B1943F00F60E19 /* Reservation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AE637726B1943F00F60E19 /* Reservation.swift */; };
+		78AE637A26B1960400F60E19 /* ReservationsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78AE637926B1960400F60E19 /* ReservationsCell.swift */; };
+		78B20DC926BED2E60015B4CC /* EventObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DC826BED2E60015B4CC /* EventObject.swift */; };
+		78B20DCB26BED3000015B4CC /* Promotion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DCA26BED3000015B4CC /* Promotion.swift */; };
+		78B20DCD26BED3770015B4CC /* EventsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DCC26BED3770015B4CC /* EventsCell.swift */; };
+		78B20DCF26BED3810015B4CC /* PromosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DCE26BED3810015B4CC /* PromosCell.swift */; };
+		78B20DD126BED50B0015B4CC /* MainImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DD026BED50B0015B4CC /* MainImageView.swift */; };
 		A899AC3F391F9EFAFABB8FEE /* Pods_RestaurantApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34AA04A10C3D76CD16349B46 /* Pods_RestaurantApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -137,6 +145,14 @@
 		78A5B93E267929E500B518C2 /* MenuItemCVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItemCVCell.swift; sourceTree = "<group>"; };
 		78AA0E722678F8870055E09C /* ViewPhotoController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewPhotoController.swift; sourceTree = "<group>"; };
 		78AA0E742678FA9E0055E09C /* Location.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Location.swift; sourceTree = "<group>"; };
+		78AE637526B186E100F60E19 /* CreateReservationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateReservationController.swift; sourceTree = "<group>"; };
+		78AE637726B1943F00F60E19 /* Reservation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reservation.swift; sourceTree = "<group>"; };
+		78AE637926B1960400F60E19 /* ReservationsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReservationsCell.swift; sourceTree = "<group>"; };
+		78B20DC826BED2E60015B4CC /* EventObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventObject.swift; sourceTree = "<group>"; };
+		78B20DCA26BED3000015B4CC /* Promotion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promotion.swift; sourceTree = "<group>"; };
+		78B20DCC26BED3770015B4CC /* EventsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsCell.swift; sourceTree = "<group>"; };
+		78B20DCE26BED3810015B4CC /* PromosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromosCell.swift; sourceTree = "<group>"; };
+		78B20DD026BED50B0015B4CC /* MainImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainImageView.swift; sourceTree = "<group>"; };
 		7C714A1F432AB4B6505EAB4B /* Pods-RestaurantApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp.debug.xcconfig"; path = "Target Support Files/Pods-RestaurantApp/Pods-RestaurantApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C158803147E8D2F1864378D8 /* Pods_RestaurantApp_RestaurantAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantApp_RestaurantAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8713E697AACB5CD30EF43AD /* Pods_RestaurantAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -191,6 +207,9 @@
 				78878E8A26792082000A36B8 /* MenuCategoryCell.swift */,
 				78A5B93C267923AD00B518C2 /* MenuItemCell.swift */,
 				78A5B93E267929E500B518C2 /* MenuItemCVCell.swift */,
+				78AE637926B1960400F60E19 /* ReservationsCell.swift */,
+				78B20DCC26BED3770015B4CC /* EventsCell.swift */,
+				78B20DCE26BED3810015B4CC /* PromosCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -275,6 +294,9 @@
 				78781AA02672979200878406 /* Photo.swift */,
 				78AA0E742678FA9E0055E09C /* Location.swift */,
 				78878E8C267921B7000A36B8 /* Category.swift */,
+				78AE637726B1943F00F60E19 /* Reservation.swift */,
+				78B20DC826BED2E60015B4CC /* EventObject.swift */,
+				78B20DCA26BED3000015B4CC /* Promotion.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -284,6 +306,7 @@
 			children = (
 				7858621A266D17AE00FBC0DE /* MainButton.swift */,
 				78586221266D343B00FBC0DE /* MainTextField.swift */,
+				78B20DD026BED50B0015B4CC /* MainImageView.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -330,6 +353,7 @@
 				7809887E266F42680094306C /* ProfileInformationController.swift */,
 				7897F5F2266E860700A05B41 /* ActionController.swift */,
 				7897F5F4266E860F00A05B41 /* ReservationController.swift */,
+				78AE637526B186E100F60E19 /* CreateReservationController.swift */,
 				7897F5EE266E85F000A05B41 /* MenuController.swift */,
 				7897F5F0266E85FB00A05B41 /* RewardsController.swift */,
 				782D983F267E08D800358A2E /* ScanController.swift */,
@@ -625,10 +649,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78B20DCD26BED3770015B4CC /* EventsCell.swift in Sources */,
 				78586212266D109300FBC0DE /* ViewController.swift in Sources */,
+				78AE637626B186E100F60E19 /* CreateReservationController.swift in Sources */,
 				78AA0E732678F8870055E09C /* ViewPhotoController.swift in Sources */,
 				78586216266D126500FBC0DE /* UIColor.swift in Sources */,
 				78586222266D343B00FBC0DE /* MainTextField.swift in Sources */,
+				78B20DCF26BED3810015B4CC /* PromosCell.swift in Sources */,
 				7897F5F5266E860F00A05B41 /* ReservationController.swift in Sources */,
 				78098878266EA9B10094306C /* HomeController.swift in Sources */,
 				7897F5F3266E860700A05B41 /* ActionController.swift in Sources */,
@@ -637,13 +664,17 @@
 				78A5B93F267929E500B518C2 /* MenuItemCVCell.swift in Sources */,
 				78419382266D0E27001E246E /* Restaurant.swift in Sources */,
 				7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */,
+				78B20DCB26BED3000015B4CC /* Promotion.swift in Sources */,
 				78586220266D32EA00FBC0DE /* SignInController.swift in Sources */,
+				78AE637826B1943F00F60E19 /* Reservation.swift in Sources */,
 				78419356266D0C79001E246E /* WelcomeController.swift in Sources */,
 				78586228266D3B8E00FBC0DE /* TabBarController.swift in Sources */,
 				7858621B266D17AE00FBC0DE /* MainButton.swift in Sources */,
 				78AA0E752678FA9E0055E09C /* Location.swift in Sources */,
 				78781AA12672979200878406 /* Photo.swift in Sources */,
 				78781A9F2672972000878406 /* ImageGalleryCell.swift in Sources */,
+				78B20DC926BED2E60015B4CC /* EventObject.swift in Sources */,
+				78AE637A26B1960400F60E19 /* ReservationsCell.swift in Sources */,
 				78878E8B26792082000A36B8 /* MenuCategoryCell.swift in Sources */,
 				7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */,
 				782487542671DAB900040874 /* LocationsController.swift in Sources */,
@@ -663,6 +694,7 @@
 				78A5B93D267923AD00B518C2 /* MenuItemCell.swift in Sources */,
 				7858621D266D1A3700FBC0DE /* UIButton.swift in Sources */,
 				7844B748267124C00072A963 /* MenuItem.swift in Sources */,
+				78B20DD126BED50B0015B4CC /* MainImageView.swift in Sources */,
 				78878E8D267921B7000A36B8 /* Category.swift in Sources */,
 				78586224266D3AAD00FBC0DE /* SignUpController.swift in Sources */,
 				7824875A2671DE3A00040874 /* HomeInfoCell.swift in Sources */,

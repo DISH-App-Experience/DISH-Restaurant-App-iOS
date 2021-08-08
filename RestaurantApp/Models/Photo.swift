@@ -10,6 +10,7 @@ import UIKit
 class Photo : NSObject {
     
     var image : String?
+    
     var key : String?
     
 }
