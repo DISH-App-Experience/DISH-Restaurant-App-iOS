@@ -12,6 +12,29 @@ class RewardsController: UIViewController {
     
     var locations = [Location]()
     
+    var locationDatas = [RewardLocation]()
+    
+    var value : Int?
+    
+    var currentPoints : Int? {
+        didSet {
+            totalScansLabel.text = "\(currentPoints!)"
+            
+            bigViewSingle.addSubview(rewardProgressLabel)
+            let attributedMutableTitle1 = NSMutableAttributedString(string: "\(currentPoints!) of ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColor])
+            attributedMutableTitle1.append(NSAttributedString(string: "\(value!)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.black), NSAttributedString.Key.foregroundColor : Restaurant.shared.themeColor]))
+            rewardProgressLabel.attributedText = attributedMutableTitle1
+            rewardProgressLabel.topAnchor.constraint(equalTo: bigViewSingle.topAnchor, constant: 16).isActive = true
+            rewardProgressLabel.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
+            rewardProgressLabel.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
+            rewardProgressLabel.heightAnchor.constraint(equalToConstant: 17).isActive = true
+        }
+    }
+    
+    var widthConstraint: NSLayoutConstraint?
+    
+    var widthConstraintWithValue: NSLayoutConstraint?
+    
     let topBanner : UIView = {
         let view = UIView()
         view.backgroundColor = Restaurant.shared.themeColor
@@ -66,7 +89,6 @@ class RewardsController: UIViewController {
     
     let rewardTitle : UILabel = {
         let label = UILabel()
-        label.text = "Free ITEM"
         label.font = UIFont.systemFont(ofSize: 14)
         label.textAlignment = NSTextAlignment.left
         label.textColor = Restaurant.shared.textColor
@@ -81,19 +103,54 @@ class RewardsController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    let rewardProgress : UIView = {
+        let view = UIView()
+        view.backgroundColor = Restaurant.shared.themeColor
+        view.layer.cornerRadius = 13.5
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
+    let rewardProgressLabel : UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 14)
+        label.textAlignment = NSTextAlignment.right
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let multipleView : UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = Restaurant.shared.backgroundColor
+        return view
+    }()
+    
+    let motivationMessage : UILabel = {
+        let label = UILabel()
+        label.text = "Keep going! You’re almost there!"
+        label.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.regular)
+        label.textColor = UIColor.systemGray
+        label.textAlignment = NSTextAlignment.center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        updateViewConstraints()
-        
         view.backgroundColor = Restaurant.shared.backgroundColor
+        
+        widthConstraint = rewardProgress.widthAnchor.constraint(equalToConstant: CGFloat(currentPoints ?? Int(CGFloat(0))))
 
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        updateViewConstraints()
         
         backend()
         
@@ -141,11 +198,19 @@ class RewardsController: UIViewController {
     }
     
     private func backend() {
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("totalScans").observe(DataEventType.value) { snapshot in
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardValue").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? Int {
-                self.totalScansLabel.text = String(value)
+                self.value = value
             } else {
-                self.totalScansLabel.text = "0"
+                self.value = 10
+            }
+        }
+        
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardTitle").observe(DataEventType.value) { snapshot in
+            if let value = snapshot.value as? String {
+                self.rewardTitle.text = "Free \(value.uppercased())"
+            } else {
+                self.rewardTitle.text = "Free Reward"
             }
         }
         
@@ -162,17 +227,40 @@ class RewardsController: UIViewController {
                 location.zip = value["zip"] as? Int
                 self.locations.append(location)
             }
-//            if self.locations.count > 1 {
-//                self.setupMultiple()
-//            } else {
+            if self.locations.count > 1 {
+                self.setupMultiple()
+            } else {
                 self.setupSingle()
-//            }
-            
+            }
         }
     }
     
     private func setupMultiple() {
+        locationDatas.removeAll()
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").observe(DataEventType.childAdded) { [self] snapshot in
+            if let value = snapshot.value as? [String : Any] {
+                let locationData = RewardLocation()
+                locationData.lastScanned = value["lastScanned"] as? Int
+                locationData.value = value["value"] as? Int
+                print("\(locationData.value)")
+                print("\(locationData.lastScanned)")
+                self.locationDatas.append(locationData)
+            }
+            var total = 0
+            for location in self.locationDatas {
+                total += location.value!
+            }
+            print("total scans in all locations: \(total)")
+            self.currentPoints = total
+        }
         
+        view.addSubview(multipleView)
+        multipleView.topAnchor.constraint(equalTo: topBanner.bottomAnchor).isActive = true
+        multipleView.leftAnchor.constraint(equalTo: topBanner.leftAnchor).isActive = true
+        multipleView.rightAnchor.constraint(equalTo: topBanner.rightAnchor).isActive = true
+        multipleView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        
+        view.bringSubviewToFront(floatingActionButton)
     }
     
     private func setupSingle() {
@@ -193,6 +281,35 @@ class RewardsController: UIViewController {
         secondaryBackColor.leftAnchor.constraint(equalTo: bigViewSingle.leftAnchor, constant: 16).isActive = true
         secondaryBackColor.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
         secondaryBackColor.heightAnchor.constraint(equalToConstant: 27).isActive = true
+        
+        view.addSubview(motivationMessage)
+        motivationMessage.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        motivationMessage.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        motivationMessage.topAnchor.constraint(equalTo: bigViewSingle.bottomAnchor).isActive = true
+        motivationMessage.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").observe(DataEventType.childAdded) { snapshot in
+            let key = snapshot.key
+            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(key).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
+                if let scanValue = snapshot.value as? Int {
+                    self.currentPoints = scanValue
+                    let lengthOfTotal : Float = Float(self.view.frame.width - 82)
+                    print("length of total: \(lengthOfTotal)")
+                    let distanceForOne : Float = Float(lengthOfTotal / Float(self.value!))
+                    print("distance for one: \(distanceForOne)")
+                    let rewardProgressLength : Float = Float(distanceForOne * Float(self.currentPoints!))
+                    print("reward progress length: \(rewardProgressLength)")
+                    print("reward progress length cgfloat: \(CGFloat(rewardProgressLength))")
+                    self.rewardProgress.removeFromSuperview()
+                    self.secondaryBackColor.addSubview(self.rewardProgress)
+                    self.rewardProgress.topAnchor.constraint(equalTo: self.secondaryBackColor.topAnchor).isActive = true
+                    self.rewardProgress.leftAnchor.constraint(equalTo: self.secondaryBackColor.leftAnchor).isActive = true
+                    self.rewardProgress.widthAnchor.constraint(equalToConstant: CGFloat(rewardProgressLength)).isActive = true
+                    self.rewardProgress.heightAnchor.constraint(equalToConstant: 27).isActive = true
+                }
+            }
+        }
+        print("done setting up single")
     }
 
 }
