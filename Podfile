@@ -22,6 +22,8 @@ target 'RestaurantApp' do
   pod 'GoogleSignIn'
   
   pod 'BulletinBoard'
+  
+  pod 'STPopup'
 
   target 'RestaurantAppTests' do
     inherit! :search_paths

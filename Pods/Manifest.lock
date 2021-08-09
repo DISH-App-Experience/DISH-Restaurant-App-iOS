@@ -107,6 +107,7 @@ PODS:
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
+  - STPopup (1.8.7)
 
 DEPENDENCIES:
   - BulletinBoard
@@ -117,6 +118,7 @@ DEPENDENCIES:
   - GoogleSignIn
   - MBProgressHUD
   - SDWebImage
+  - STPopup
 
 SPEC REPOS:
   trunk:
@@ -141,6 +143,7 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - SDWebImage
+    - STPopup
 
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
@@ -164,7 +167,8 @@ SPEC CHECKSUMS:
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
+  STPopup: a9045557bc48a0df51fbb7bf0544447c5fe84d34
 
-PODFILE CHECKSUM: d0949b16bcba91deabb088189decf771bb5b51a3
+PODFILE CHECKSUM: 1bb5ed2459c9fa1064663c6a6577a740ac58ce50
 
 COCOAPODS: 1.10.1

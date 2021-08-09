@@ -64,6 +64,8 @@
 		78B20DCD26BED3770015B4CC /* EventsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DCC26BED3770015B4CC /* EventsCell.swift */; };
 		78B20DCF26BED3810015B4CC /* PromosCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DCE26BED3810015B4CC /* PromosCell.swift */; };
 		78B20DD126BED50B0015B4CC /* MainImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DD026BED50B0015B4CC /* MainImageView.swift */; };
+		78B20DD326C0BF940015B4CC /* ScanControllerQR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DD226C0BF940015B4CC /* ScanControllerQR.swift */; };
+		78B20DD526C0CB460015B4CC /* RewardLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DD426C0CB460015B4CC /* RewardLocation.swift */; };
 		A899AC3F391F9EFAFABB8FEE /* Pods_RestaurantApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34AA04A10C3D76CD16349B46 /* Pods_RestaurantApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -153,6 +155,8 @@
 		78B20DCC26BED3770015B4CC /* EventsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsCell.swift; sourceTree = "<group>"; };
 		78B20DCE26BED3810015B4CC /* PromosCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromosCell.swift; sourceTree = "<group>"; };
 		78B20DD026BED50B0015B4CC /* MainImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainImageView.swift; sourceTree = "<group>"; };
+		78B20DD226C0BF940015B4CC /* ScanControllerQR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanControllerQR.swift; sourceTree = "<group>"; };
+		78B20DD426C0CB460015B4CC /* RewardLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardLocation.swift; sourceTree = "<group>"; };
 		7C714A1F432AB4B6505EAB4B /* Pods-RestaurantApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp.debug.xcconfig"; path = "Target Support Files/Pods-RestaurantApp/Pods-RestaurantApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C158803147E8D2F1864378D8 /* Pods_RestaurantApp_RestaurantAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantApp_RestaurantAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8713E697AACB5CD30EF43AD /* Pods_RestaurantAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -297,6 +301,7 @@
 				78AE637726B1943F00F60E19 /* Reservation.swift */,
 				78B20DC826BED2E60015B4CC /* EventObject.swift */,
 				78B20DCA26BED3000015B4CC /* Promotion.swift */,
+				78B20DD426C0CB460015B4CC /* RewardLocation.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -357,6 +362,7 @@
 				7897F5EE266E85F000A05B41 /* MenuController.swift */,
 				7897F5F0266E85FB00A05B41 /* RewardsController.swift */,
 				782D983F267E08D800358A2E /* ScanController.swift */,
+				78B20DD226C0BF940015B4CC /* ScanControllerQR.swift */,
 				782D983D267E00A800358A2E /* AboutUs.swift */,
 			);
 			path = TabBar;
@@ -685,6 +691,7 @@
 				7844B74A267125C40072A963 /* HomeMenuCell.swift in Sources */,
 				7844B74C26714AAF0072A963 /* MenuItemController.swift in Sources */,
 				782D983E267E00A800358A2E /* AboutUs.swift in Sources */,
+				78B20DD326C0BF940015B4CC /* ScanControllerQR.swift in Sources */,
 				782487582671DDD600040874 /* InfoAction.swift in Sources */,
 				7809887F266F42680094306C /* ProfileInformationController.swift in Sources */,
 				7809887A266F3DFD0094306C /* ProfileController.swift in Sources */,
@@ -693,6 +700,7 @@
 				7844B74E26714D3C0072A963 /* HomeActionCell.swift in Sources */,
 				78A5B93D267923AD00B518C2 /* MenuItemCell.swift in Sources */,
 				7858621D266D1A3700FBC0DE /* UIButton.swift in Sources */,
+				78B20DD526C0CB460015B4CC /* RewardLocation.swift in Sources */,
 				7844B748267124C00072A963 /* MenuItem.swift in Sources */,
 				78B20DD126BED50B0015B4CC /* MainImageView.swift in Sources */,
 				78878E8D267921B7000A36B8 /* Category.swift in Sources */,
