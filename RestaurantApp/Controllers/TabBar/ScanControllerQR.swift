@@ -174,27 +174,63 @@ class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMeta
     }
     
     private func showPopUp() {
-        let alert = UIAlertController(title: "QR Found!", message: "Add 1 scan to your visit?", preferredStyle: UIAlertController.Style.alert)
-        alert.addAction(UIAlertAction(title: "Add 1 Visit", style: UIAlertAction.Style.default, handler: { _ in
-            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
-                if let value = snapshot.value as? Int {
-                    print("existing value")
-                    let newNumber = Int(value + 1)
-                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
-                    scannedID = ""
-                    self.addSuccessNotification()
-                    self.completion()
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("lastScanned").observe(DataEventType.value) { snapshot in
+            if let lastScanned = snapshot.value as? Int {
+                let date = Date().timeIntervalSince1970
+                if Int(date) - lastScanned < 600 {
+                    self.simpleAlert(title: "Error", message: "Unrecognized Scan Card. Please try again later.")
                 } else {
-                    print("new value")
-                    let newNumber = 1
-                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
-                    scannedID = ""
-                    self.addSuccessNotification()
-                    self.completion()
+                    print("distance is \(Int(date) - lastScanned)")
+                    let alert = UIAlertController(title: "QR Found!", message: "Add 1 scan to your visit?", preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: "Add 1 Visit", style: UIAlertAction.Style.default, handler: { _ in
+                        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
+                            if let value = snapshot.value as? Int {
+                                print("existing value")
+                                let newNumber = Int(value + 1)
+                                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": Int(Date().timeIntervalSince1970)])
+                                scannedID = ""
+                                self.analytics()
+                                self.addSuccessNotification()
+                                self.completion()
+                            } else {
+                                print("new value")
+                                let newNumber = 1
+                                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": Int(Date().timeIntervalSince1970)])
+                                scannedID = ""
+                                self.analytics()
+                                self.addSuccessNotification()
+                                self.completion()
+                            }
+                        }
+                    }))
+                    self.present(alert, animated: true, completion: nil)
                 }
+            } else {
+                let alert = UIAlertController(title: "QR Found!", message: "Add 1 scan to your visit?", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Add 1 Visit", style: UIAlertAction.Style.default, handler: { _ in
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
+                        if let value = snapshot.value as? Int {
+                            print("existing value")
+                            let newNumber = Int(value + 1)
+                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
+                            scannedID = ""
+                            self.analytics()
+                            self.addSuccessNotification()
+                            self.completion()
+                        } else {
+                            print("new value")
+                            let newNumber = 1
+                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
+                            scannedID = ""
+                            self.analytics()
+                            self.addSuccessNotification()
+                            self.completion()
+                        }
+                    }
+                }))
+                self.present(alert, animated: true, completion: nil)
             }
-        }))
-        self.present(alert, animated: true, completion: nil)
+        }
     }
     
     private func analytics() {

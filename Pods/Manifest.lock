@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.4.3)
   - AppAuth (1.4.0):
     - AppAuth/Core (= 1.4.0)
     - AppAuth/ExternalUserAgent (= 1.4.0)
@@ -18,6 +19,9 @@ PODS:
   - Firebase/Database (7.8.1):
     - Firebase/CoreOnly
     - FirebaseDatabase (~> 7.8.0)
+  - Firebase/Messaging (7.8.1):
+    - Firebase/CoreOnly
+    - FirebaseMessaging (~> 7.8.0)
   - Firebase/Storage (7.8.1):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 7.8.0)
@@ -52,6 +56,18 @@ PODS:
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
     - PromisesObjC (~> 1.2)
+  - FirebaseInstanceID (7.11.0):
+    - FirebaseCore (~> 7.0)
+    - FirebaseInstallations (~> 7.0)
+    - GoogleUtilities/Environment (~> 7.0)
+    - GoogleUtilities/UserDefaults (~> 7.0)
+  - FirebaseMessaging (7.8.0):
+    - FirebaseCore (~> 7.0)
+    - FirebaseInstanceID (~> 7.0)
+    - GoogleUtilities/AppDelegateSwizzler (~> 7.0)
+    - GoogleUtilities/Environment (~> 7.0)
+    - GoogleUtilities/Reachability (~> 7.0)
+    - GoogleUtilities/UserDefaults (~> 7.0)
   - FirebaseStorage (7.8.0):
     - FirebaseCore (~> 7.0)
     - GTMSessionFetcher/Core (~> 1.4)
@@ -104,24 +120,30 @@ PODS:
   - nanopb/decode (2.30907.0)
   - nanopb/encode (2.30907.0)
   - PromisesObjC (1.2.12)
+  - ReachabilitySwift (5.0.0)
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
   - STPopup (1.8.7)
 
 DEPENDENCIES:
+  - Alamofire
   - BulletinBoard
   - Firebase/Analytics
   - Firebase/Auth
+  - Firebase/Core
   - Firebase/Database
+  - Firebase/Messaging
   - Firebase/Storage
   - GoogleSignIn
   - MBProgressHUD
+  - ReachabilitySwift
   - SDWebImage
   - STPopup
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - AppAuth
     - BulletinBoard
     - Firebase
@@ -131,6 +153,8 @@ SPEC REPOS:
     - FirebaseCoreDiagnostics
     - FirebaseDatabase
     - FirebaseInstallations
+    - FirebaseInstanceID
+    - FirebaseMessaging
     - FirebaseStorage
     - GoogleAppMeasurement
     - GoogleDataTransport
@@ -142,10 +166,12 @@ SPEC REPOS:
     - MBProgressHUD
     - nanopb
     - PromisesObjC
+    - ReachabilitySwift
     - SDWebImage
     - STPopup
 
 SPEC CHECKSUMS:
+  Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   BulletinBoard: dba77053c2a7b64953f63073f7534165af2edd21
   Firebase: d59ad4129167f9f0d2a4f6c1f0c462254b6002c8
@@ -155,6 +181,8 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: 066f996579cf097bdad3d7dc9a918d6b9e129c50
   FirebaseDatabase: f909d1448d4e7c4f5ef5acd1b8095f4bea9813ca
   FirebaseInstallations: 7f7ed0e7e27fb51f57291e1876e2ddb1524126c1
+  FirebaseInstanceID: ad5135045a498d7775903efd39762d2cdfa1be27
+  FirebaseMessaging: 1d5cac3728c042d3d4700ecb56bbac893660a963
   FirebaseStorage: 84d1eb7bfe8c3cbfe6beeeb02ce712f65dcb8b83
   GoogleAppMeasurement: 50a254ee92c1b94fbe2abea7e3da35e4c6dedce0
   GoogleDataTransport: b006084b73915a42c28a3466961a4edda3065da6
@@ -166,9 +194,10 @@ SPEC CHECKSUMS:
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   STPopup: a9045557bc48a0df51fbb7bf0544447c5fe84d34
 
-PODFILE CHECKSUM: 1bb5ed2459c9fa1064663c6a6577a740ac58ce50
+PODFILE CHECKSUM: a4cf4891f693737bc23243b91c2460c385be224f
 
 COCOAPODS: 1.10.1

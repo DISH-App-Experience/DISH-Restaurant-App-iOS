@@ -15,6 +15,9 @@
 		7809887D266F3F0D0094306C /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7809887C266F3F0D0094306C /* ProfileCell.swift */; };
 		7809887F266F42680094306C /* ProfileInformationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7809887E266F42680094306C /* ProfileInformationController.swift */; };
 		78098883266F45D70094306C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78098882266F45D70094306C /* User.swift */; };
+		782032E026C7248300E975B3 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782032DF26C7248300E975B3 /* PushNotificationManager.swift */; };
+		782032E226C7248C00E975B3 /* PushNotificationSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782032E126C7248B00E975B3 /* PushNotificationSender.swift */; };
+		782032E426C80E0400E975B3 /* RestaurantOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782032E326C80E0400E975B3 /* RestaurantOwner.swift */; };
 		782487542671DAB900040874 /* LocationsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487532671DAB900040874 /* LocationsController.swift */; };
 		782487562671DAD600040874 /* GalleryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487552671DAD600040874 /* GalleryController.swift */; };
 		782487582671DDD600040874 /* InfoAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782487572671DDD600040874 /* InfoAction.swift */; };
@@ -66,6 +69,8 @@
 		78B20DD126BED50B0015B4CC /* MainImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DD026BED50B0015B4CC /* MainImageView.swift */; };
 		78B20DD326C0BF940015B4CC /* ScanControllerQR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DD226C0BF940015B4CC /* ScanControllerQR.swift */; };
 		78B20DD526C0CB460015B4CC /* RewardLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B20DD426C0CB460015B4CC /* RewardLocation.swift */; };
+		78B41F9126C3461F001BF8FC /* RewardLocationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B41F9026C3461F001BF8FC /* RewardLocationCell.swift */; };
+		78B6DA1E26C1621D00C1B3D6 /* NoConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78B6DA1D26C1621D00C1B3D6 /* NoConnection.swift */; };
 		A899AC3F391F9EFAFABB8FEE /* Pods_RestaurantApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34AA04A10C3D76CD16349B46 /* Pods_RestaurantApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +104,9 @@
 		7809887C266F3F0D0094306C /* ProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCell.swift; sourceTree = "<group>"; };
 		7809887E266F42680094306C /* ProfileInformationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInformationController.swift; sourceTree = "<group>"; };
 		78098882266F45D70094306C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		782032DF26C7248300E975B3 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
+		782032E126C7248B00E975B3 /* PushNotificationSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSender.swift; sourceTree = "<group>"; };
+		782032E326C80E0400E975B3 /* RestaurantOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantOwner.swift; sourceTree = "<group>"; };
 		782487532671DAB900040874 /* LocationsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsController.swift; sourceTree = "<group>"; };
 		782487552671DAD600040874 /* GalleryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryController.swift; sourceTree = "<group>"; };
 		782487572671DDD600040874 /* InfoAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoAction.swift; sourceTree = "<group>"; };
@@ -157,6 +165,8 @@
 		78B20DD026BED50B0015B4CC /* MainImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainImageView.swift; sourceTree = "<group>"; };
 		78B20DD226C0BF940015B4CC /* ScanControllerQR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanControllerQR.swift; sourceTree = "<group>"; };
 		78B20DD426C0CB460015B4CC /* RewardLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardLocation.swift; sourceTree = "<group>"; };
+		78B41F9026C3461F001BF8FC /* RewardLocationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardLocationCell.swift; sourceTree = "<group>"; };
+		78B6DA1D26C1621D00C1B3D6 /* NoConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoConnection.swift; sourceTree = "<group>"; };
 		7C714A1F432AB4B6505EAB4B /* Pods-RestaurantApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RestaurantApp.debug.xcconfig"; path = "Target Support Files/Pods-RestaurantApp/Pods-RestaurantApp.debug.xcconfig"; sourceTree = "<group>"; };
 		C158803147E8D2F1864378D8 /* Pods_RestaurantApp_RestaurantAppUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantApp_RestaurantAppUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8713E697AACB5CD30EF43AD /* Pods_RestaurantAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RestaurantAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -214,8 +224,18 @@
 				78AE637926B1960400F60E19 /* ReservationsCell.swift */,
 				78B20DCC26BED3770015B4CC /* EventsCell.swift */,
 				78B20DCE26BED3810015B4CC /* PromosCell.swift */,
+				78B41F9026C3461F001BF8FC /* RewardLocationCell.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		782032DE26C7247600E975B3 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				782032DF26C7248300E975B3 /* PushNotificationManager.swift */,
+				782032E126C7248B00E975B3 /* PushNotificationSender.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		78419345266D0C79001E246E = {
@@ -246,6 +266,7 @@
 				7858622B266DF0A000FBC0DE /* RestaurantApp.entitlements */,
 				78419351266D0C79001E246E /* AppDelegate.swift */,
 				78419353266D0C79001E246E /* SceneDelegate.swift */,
+				782032DE26C7247600E975B3 /* Helpers */,
 				78586218266D13F900FBC0DE /* Models */,
 				78586217266D13F200FBC0DE /* Extensions */,
 				78586219266D178600FBC0DE /* UI */,
@@ -292,6 +313,7 @@
 			children = (
 				78419381266D0E27001E246E /* Restaurant.swift */,
 				78098882266F45D70094306C /* User.swift */,
+				782032E326C80E0400E975B3 /* RestaurantOwner.swift */,
 				7844B747267124C00072A963 /* MenuItem.swift */,
 				780537ED2671547C000343B5 /* HomeAction.swift */,
 				782487572671DDD600040874 /* InfoAction.swift */,
@@ -331,6 +353,7 @@
 			children = (
 				78419383266D0E87001E246E /* LoadingController.swift */,
 				78419355266D0C79001E246E /* WelcomeController.swift */,
+				78B6DA1D26C1621D00C1B3D6 /* NoConnection.swift */,
 			);
 			path = Startup;
 			sourceTree = "<group>";
@@ -657,11 +680,13 @@
 			files = (
 				78B20DCD26BED3770015B4CC /* EventsCell.swift in Sources */,
 				78586212266D109300FBC0DE /* ViewController.swift in Sources */,
+				782032E426C80E0400E975B3 /* RestaurantOwner.swift in Sources */,
 				78AE637626B186E100F60E19 /* CreateReservationController.swift in Sources */,
 				78AA0E732678F8870055E09C /* ViewPhotoController.swift in Sources */,
 				78586216266D126500FBC0DE /* UIColor.swift in Sources */,
 				78586222266D343B00FBC0DE /* MainTextField.swift in Sources */,
 				78B20DCF26BED3810015B4CC /* PromosCell.swift in Sources */,
+				782032E026C7248300E975B3 /* PushNotificationManager.swift in Sources */,
 				7897F5F5266E860F00A05B41 /* ReservationController.swift in Sources */,
 				78098878266EA9B10094306C /* HomeController.swift in Sources */,
 				7897F5F3266E860700A05B41 /* ActionController.swift in Sources */,
@@ -669,6 +694,7 @@
 				7809887D266F3F0D0094306C /* ProfileCell.swift in Sources */,
 				78A5B93F267929E500B518C2 /* MenuItemCVCell.swift in Sources */,
 				78419382266D0E27001E246E /* Restaurant.swift in Sources */,
+				782032E226C7248C00E975B3 /* PushNotificationSender.swift in Sources */,
 				7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */,
 				78B20DCB26BED3000015B4CC /* Promotion.swift in Sources */,
 				78586220266D32EA00FBC0DE /* SignInController.swift in Sources */,
@@ -696,9 +722,11 @@
 				7809887F266F42680094306C /* ProfileInformationController.swift in Sources */,
 				7809887A266F3DFD0094306C /* ProfileController.swift in Sources */,
 				78419354266D0C79001E246E /* SceneDelegate.swift in Sources */,
+				78B6DA1E26C1621D00C1B3D6 /* NoConnection.swift in Sources */,
 				78419384266D0E87001E246E /* LoadingController.swift in Sources */,
 				7844B74E26714D3C0072A963 /* HomeActionCell.swift in Sources */,
 				78A5B93D267923AD00B518C2 /* MenuItemCell.swift in Sources */,
+				78B41F9126C3461F001BF8FC /* RewardLocationCell.swift in Sources */,
 				7858621D266D1A3700FBC0DE /* UIButton.swift in Sources */,
 				78B20DD526C0CB460015B4CC /* RewardLocation.swift in Sources */,
 				7844B748267124C00072A963 /* MenuItem.swift in Sources */,

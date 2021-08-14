@@ -18,12 +18,20 @@ target 'RestaurantApp' do
   pod 'Firebase/Database'
   
   pod 'Firebase/Storage'
+  
+  pod 'Firebase/Core'
+  
+  pod 'Firebase/Messaging'
 
   pod 'GoogleSignIn'
   
   pod 'BulletinBoard'
   
   pod 'STPopup'
+  
+  pod 'ReachabilitySwift'
+  
+  pod 'Alamofire'
 
   target 'RestaurantAppTests' do
     inherit! :search_paths

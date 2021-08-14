@@ -161,6 +161,17 @@ class CreateReservationController: UIViewController, UITextFieldDelegate {
                 "userId" : lastName
             ]
             analytics()
+            
+            Database.database().reference().child("Users").observe(DataEventType.childAdded) { snapshot in
+                if let value = snapshot.value as? [String : Any] {
+                    let user = RestaurantOwner()
+                    user.fcmToken = value["fcmToken"] as? String ?? "eNO6r2eVWUQNhEA7KmyD-7:APA91bF7DdMsq9Jq0ov4uW3_9nr0wc6zeccZ14UtD3_qNV5y8GPdKaffWzCz-Vo9auckttKvXG-dqoTMOOkGfCQaKgSezsDNmyLX-APsIMsCWUgEgEqUOLWbAdaWLfUUMAEctb_SQrLI"
+                    user.appId = value["appId"] as? String
+                    if user.appId == Restaurant.shared.restaurantId {
+                        PushNotificationSender().sendPushNotification(to: user.fcmToken!, title: "Reservation Request Update", body: "One of your app users has reqested a reservation! Be sure to check it soon")
+                    }
+                }
+            }
             Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("reservations").child(key!).updateChildValues(params)
             addSuccessNotification()
             hideLoading()

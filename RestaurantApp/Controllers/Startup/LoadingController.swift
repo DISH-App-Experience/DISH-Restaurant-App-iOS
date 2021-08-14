@@ -23,15 +23,15 @@ class LoadingController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.white
-        
         updateViewConstraints()
-        backend()
 
         // Do any additional setup after loading the view.
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        backend()
         
         navigationController?.navigationBar.isHidden = true
     }

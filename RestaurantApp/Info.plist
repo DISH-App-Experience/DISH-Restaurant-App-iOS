@@ -2,14 +2,10 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Please allow camera usage to access rewards cards scanning!</string>
-	<key>FirebaseAutomaticScreenReportingEnabled</key>
-	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Buzz&apos;s</string>
+	<string>Buzz's</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -35,8 +31,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
+	<key>FirebaseAutomaticScreenReportingEnabled</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Please allow camera usage to access rewards cards scanning!</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Please allow location permission to access the restaurant locations in relevance to yours!</string>
 	<key>UIApplicationSceneManifest</key>
@@ -58,6 +58,12 @@
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+		<string>remote-notification</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
