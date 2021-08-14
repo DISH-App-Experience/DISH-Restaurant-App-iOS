@@ -8,13 +8,17 @@
 import UIKit
 import Firebase
 
-class RewardsController: UIViewController {
+class RewardsController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     var locations = [Location]()
     
     var locationDatas = [RewardLocation]()
     
     var value : Int?
+    
+    var rewardTitleValue : String?
+    
+    var collectionView : UICollectionView?
     
     var currentPoints : Int? {
         didSet {
@@ -132,6 +136,7 @@ class RewardsController: UIViewController {
         label.text = "Keep going! You’re almost there!"
         label.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.regular)
         label.textColor = UIColor.systemGray
+        label.numberOfLines = 100
         label.textAlignment = NSTextAlignment.center
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -151,9 +156,9 @@ class RewardsController: UIViewController {
         super.viewWillAppear(animated)
         
         updateViewConstraints()
-        
         backend()
         
+        navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isHidden = true
     }
     
@@ -178,23 +183,32 @@ class RewardsController: UIViewController {
         floatingActionButton.widthAnchor.constraint(equalToConstant: 56).isActive = true
         floatingActionButton.heightAnchor.constraint(equalToConstant: 56).isActive = true
         
-        view.addSubview(totalScansLabel)
+        topBanner.addSubview(totalScansLabel)
         totalScansLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 143).isActive = true
         totalScansLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         totalScansLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         totalScansLabel.heightAnchor.constraint(equalToConstant: 88).isActive = true
         
-        view.addSubview(scansLabel)
+        topBanner.addSubview(scansLabel)
         scansLabel.topAnchor.constraint(equalTo: totalScansLabel.bottomAnchor, constant: 6).isActive = true
         scansLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         scansLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         scansLabel.heightAnchor.constraint(equalToConstant: 27).isActive = true
     }
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     @objc func showScanController() {
         let controller = ScanController()
         add3DMotion(withFeedbackStyle: UIImpactFeedbackGenerator.FeedbackStyle.medium)
         self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    private func delegates() {
+        collectionView?.delegate = self
+        collectionView?.dataSource = self
     }
     
     private func backend() {
@@ -208,6 +222,7 @@ class RewardsController: UIViewController {
         
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardTitle").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? String {
+                self.rewardTitleValue = value
                 self.rewardTitle.text = "Free \(value.uppercased())"
             } else {
                 self.rewardTitle.text = "Free Reward"
@@ -225,6 +240,7 @@ class RewardsController: UIViewController {
                 location.state = value["state"] as? String
                 location.street = value["street"] as? String
                 location.zip = value["zip"] as? Int
+                location.key = snapchat.key
                 self.locations.append(location)
             }
             if self.locations.count > 1 {
@@ -242,8 +258,6 @@ class RewardsController: UIViewController {
                 let locationData = RewardLocation()
                 locationData.lastScanned = value["lastScanned"] as? Int
                 locationData.value = value["value"] as? Int
-                print("\(locationData.value)")
-                print("\(locationData.lastScanned)")
                 self.locationDatas.append(locationData)
             }
             var total = 0
@@ -252,6 +266,10 @@ class RewardsController: UIViewController {
             }
             print("total scans in all locations: \(total)")
             self.currentPoints = total
+            collectionViewStuff()
+            constraints()
+            delegates()
+            collectionView!.reloadData()
         }
         
         view.addSubview(multipleView)
@@ -261,6 +279,30 @@ class RewardsController: UIViewController {
         multipleView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         
         view.bringSubviewToFront(floatingActionButton)
+    }
+    
+    private func collectionViewStuff() {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = UICollectionView.ScrollDirection.vertical
+        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+    }
+    
+    private func constraints() {
+        view.addSubview(collectionView!)
+        collectionView?.register(RewardLocationCell.self, forCellWithReuseIdentifier: RewardLocationCell.identifier)
+        collectionView?.backgroundColor = UIColor.clear
+        collectionView?.showsVerticalScrollIndicator = false
+        collectionView?.showsHorizontalScrollIndicator = false
+        collectionView?.layer.masksToBounds = false
+        collectionView?.alwaysBounceVertical = false
+        collectionView?.translatesAutoresizingMaskIntoConstraints = false
+        collectionView?.topAnchor.constraint(equalTo: topBanner.bottomAnchor, constant: 16).isActive = true
+        collectionView?.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
+        collectionView?.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
+        collectionView?.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive = true
+        
+        view.bringSubviewToFront(floatingActionButton)
+        
     }
     
     private func setupSingle() {
@@ -283,8 +325,8 @@ class RewardsController: UIViewController {
         secondaryBackColor.heightAnchor.constraint(equalToConstant: 27).isActive = true
         
         view.addSubview(motivationMessage)
-        motivationMessage.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        motivationMessage.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        motivationMessage.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50).isActive = true
+        motivationMessage.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50).isActive = true
         motivationMessage.topAnchor.constraint(equalTo: bigViewSingle.bottomAnchor).isActive = true
         motivationMessage.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
@@ -297,9 +339,15 @@ class RewardsController: UIViewController {
                     print("length of total: \(lengthOfTotal)")
                     let distanceForOne : Float = Float(lengthOfTotal / Float(self.value!))
                     print("distance for one: \(distanceForOne)")
-                    let rewardProgressLength : Float = Float(distanceForOne * Float(self.currentPoints!))
+                    var rewardProgressLength : Float = Float(distanceForOne * Float(self.currentPoints!))
                     print("reward progress length: \(rewardProgressLength)")
                     print("reward progress length cgfloat: \(CGFloat(rewardProgressLength))")
+                    
+                    if self.currentPoints! >= self.value! {
+                        self.motivationMessage.text = "Congrats! You have enough points to claim a \(self.rewardTitleValue!) by ordering via our app!"
+                        rewardProgressLength = Float(distanceForOne) * Float(self.value!)
+                    }
+                    
                     self.rewardProgress.removeFromSuperview()
                     self.secondaryBackColor.addSubview(self.rewardProgress)
                     self.rewardProgress.topAnchor.constraint(equalTo: self.secondaryBackColor.topAnchor).isActive = true
@@ -310,6 +358,51 @@ class RewardsController: UIViewController {
             }
         }
         print("done setting up single")
+    }
+    
+    // MARK: - UICollectionView Delegate & Data Source Functions
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if locations.count == 0 {
+            return 0
+        } else {
+            return locations.count
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RewardLocationCell.identifier, for: indexPath) as! RewardLocationCell
+        
+        cell.firstServiceView.layer.masksToBounds = false
+        
+        if let title = self.locations[indexPath.row].street {
+            cell.firstTitle.text = title
+        } else {
+            cell.firstTitle.text = "Untitled Location"
+        }
+        
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(locations[indexPath.row].key!).child("value").observe(DataEventType.value) { rewardSnap in
+            if let value = rewardSnap.value as? Int {
+                cell.scanLabel.text = "\(value)"
+            } else {
+                cell.scanLabel.text = "0"
+            }
+        }
+        
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("SELECTED IMAGE")
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let size = (self.collectionView!.frame.width / 2) - 10
+        return CGSize(width: size, height: size)
     }
 
 }

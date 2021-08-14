@@ -208,6 +208,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         backend()
         setupActions()
         setupInfoActions()
+        notification()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -582,6 +583,13 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         composer.mailComposeDelegate = self
         composer.setToRecipients([email])
         self.present(composer, animated: true)
+    }
+    
+    private func notification() {
+        
+        // Notification Implementation
+        let pushManager = PushNotificationManager(userID: Auth.auth().currentUser!.uid)
+        pushManager.registerForPushNotifications()
     }
     
     @objc func profileImagePressed() {

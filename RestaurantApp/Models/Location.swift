@@ -22,5 +22,7 @@ class Location: NSObject {
     var street : String?
     
     var zip : Int?
+    
+    var key : String?
 
 }
