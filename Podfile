@@ -22,6 +22,8 @@ target 'RestaurantApp' do
   pod 'Firebase/Core'
   
   pod 'Firebase/Messaging'
+  
+  pod 'SPConfetti'
 
   pod 'GoogleSignIn'
   
@@ -32,6 +34,8 @@ target 'RestaurantApp' do
   pod 'ReachabilitySwift'
   
   pod 'Alamofire'
+  
+  pod 'Stripe'
 
   target 'RestaurantAppTests' do
     inherit! :search_paths

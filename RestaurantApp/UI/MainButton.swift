@@ -21,6 +21,8 @@ class MainButton : UIButton {
         
         addTarget(self, action: #selector(effects), for: UIControl.Event.touchUpInside)
         
+        backgroundColor = Restaurant.shared.backgroundColor
+        
         setTitleColor(Restaurant.shared.textColorOnButton, for: UIControl.State.normal)
     }
     

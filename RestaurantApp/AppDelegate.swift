@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Stripe
 import Firebase
 import GoogleSignIn
 
@@ -23,6 +24,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         
         // Sign In With Google Configuration
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
+        
+        // Stripe Configuration
+        Stripe.setDefaultPublishableKey("pk_test_TYooMQauvdEDq54NiTphI7jx")
         
         // Pre Built Sign Out Code
 //        let auth = Auth.auth()

@@ -181,6 +181,13 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return tableView
     }()
     
+    let fab : MainFAB = {
+        let fab = MainFAB()
+        fab.setImage(UIImage(systemName: "cart.fill"), for: UIControl.State.normal)
+        fab.addTarget(self, action: #selector(moveToOrder), for: UIControl.Event.touchUpInside)
+        return fab
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -324,6 +331,18 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         statusBarView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         statusBarView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         statusBarView.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("allowCheckoutWithScanOnly").observe(DataEventType.value) { snap in
+            if let value = snap.value as? Bool {
+                if value {
+                    self.view.addSubview(self.fab)
+                    self.fab.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
+                    self.fab.rightAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.rightAnchor, constant: -25).isActive = true
+                    self.fab.widthAnchor.constraint(equalToConstant: 56).isActive = true
+                    self.fab.heightAnchor.constraint(equalToConstant: 56).isActive = true
+                }
+            }
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -598,6 +617,11 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     @objc func menuButtonPressed() {
         moveToMenuPage()
+    }
+    
+    @objc func moveToOrder() {
+        let controller = SelectLocationOrder()
+        self.navigationController?.pushViewController(controller, animated: true)
     }
     
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
