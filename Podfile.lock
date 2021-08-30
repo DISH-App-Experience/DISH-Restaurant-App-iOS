@@ -124,7 +124,14 @@ PODS:
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
+  - SPConfetti (1.2.4)
   - STPopup (1.8.7)
+  - Stripe (21.8.1):
+    - Stripe/Stripe3DS2 (= 21.8.1)
+    - StripeCore (= 21.8.1)
+  - Stripe/Stripe3DS2 (21.8.1):
+    - StripeCore (= 21.8.1)
+  - StripeCore (21.8.1)
 
 DEPENDENCIES:
   - Alamofire
@@ -139,7 +146,9 @@ DEPENDENCIES:
   - MBProgressHUD
   - ReachabilitySwift
   - SDWebImage
+  - SPConfetti
   - STPopup
+  - Stripe
 
 SPEC REPOS:
   trunk:
@@ -168,7 +177,10 @@ SPEC REPOS:
     - PromisesObjC
     - ReachabilitySwift
     - SDWebImage
+    - SPConfetti
     - STPopup
+    - Stripe
+    - StripeCore
 
 SPEC CHECKSUMS:
   Alamofire: e447a2774a40c996748296fa2c55112fdbbc42f9
@@ -196,8 +208,11 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
+  SPConfetti: d1e86800cf5cdcb2cd04d29209352de90cb79788
   STPopup: a9045557bc48a0df51fbb7bf0544447c5fe84d34
+  Stripe: 57c6997c64042a3f5aedae9b76e331942f8b75d2
+  StripeCore: a6e50d58119a0c7601773b56f274db2d394dcdac
 
-PODFILE CHECKSUM: a4cf4891f693737bc23243b91c2460c385be224f
+PODFILE CHECKSUM: 0ab98d9132d5ec22cfdddf094f256e881bc6f213
 
 COCOAPODS: 1.10.1

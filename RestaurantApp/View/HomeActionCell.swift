@@ -54,7 +54,7 @@ class HomeActionCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        backgroundColor = UIColor.white
+        backgroundColor = UIColor.clear
         
         addSubview(menuView)
         menuView.topAnchor.constraint(equalTo: topAnchor).isActive = true

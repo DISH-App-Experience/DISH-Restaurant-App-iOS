@@ -23,6 +23,6 @@ class MenuItem: NSObject {
     
     var key : String?
     
-    
+    var scanPrice : Int?
 
 }

@@ -23,7 +23,7 @@ class MainTextField: UITextField {
         
         tintColor = Restaurant.shared.themeColor
         
-        backgroundColor = UIColor(hexString: "F2F2F2")
+        backgroundColor = Restaurant.shared.secondaryBackground
         
         borderStyle = BorderStyle.none
         
