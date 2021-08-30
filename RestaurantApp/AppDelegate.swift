@@ -26,7 +26,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         GIDSignIn.sharedInstance().clientID = FirebaseApp.app()?.options.clientID
         
         // Stripe Configuration
-        Stripe.setDefaultPublishableKey("pk_test_TYooMQauvdEDq54NiTphI7jx")
+        StripeAPI.defaultPublishableKey = "pk_test_TYooMQauvdEDq54NiTphI7jx"
         
         // Pre Built Sign Out Code
 //        let auth = Auth.auth()

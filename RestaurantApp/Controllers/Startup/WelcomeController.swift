@@ -49,7 +49,7 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
     
     let googleButton : MainButton = {
         let button = MainButton()
-        button.backgroundColor = UIColor(hexString: "F2F2F2")
+        button.backgroundColor = Restaurant.shared.secondaryBackground
         button.addTarget(self, action: #selector(googleButtonPressed), for: UIControl.Event.touchUpInside)
         return button
     }()
