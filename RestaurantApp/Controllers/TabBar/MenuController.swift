@@ -208,6 +208,7 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
                 self.tableView.reloadData()
                 self.menuCollectionView!.reloadData()
                 self.hideLoading()
+                print("done finding menu")
             }
         }
     }

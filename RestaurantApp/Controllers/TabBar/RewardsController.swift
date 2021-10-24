@@ -16,6 +16,8 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
     
     var value : Int?
     
+    var items = [MenuItem]()
+    
     var rewardTitleValue : String?
     
     var collectionView : UICollectionView?
@@ -155,8 +157,12 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        showLoading()
         updateViewConstraints()
-        backend()
+        backend1()
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2) {
+            self.backend2()
+        }
         
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isHidden = true
@@ -211,24 +217,73 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
         collectionView?.dataSource = self
     }
     
-    private func backend() {
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardValue").observe(DataEventType.value) { snapshot in
+    private func backend1() {
+        items.removeAll()
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").observe(DataEventType.childAdded, with: { snapshot in
+            if let value = snapshot.value as? [String : Any] {
+                let item = MenuItem()
+                item.title = value["title"] as? String
+                item.desc = value["description"] as? String
+                item.price = value["price"] as? Double
+                item.scanPrice = value["scanPrice"] as? Int
+                item.category = value["category"] as? String
+                item.imageUrl = value["image"] as? String
+                item.timestamp = value["time"] as? Int
+                item.key = value["key"] as? String ?? snapshot.key
+                self.items.append(item)
+            }
+            DispatchQueue.main.async {
+                let sortedList = self.items.sorted(by: { $1.timestamp! < $0.timestamp! } )
+                self.items.removeAll()
+                self.items = sortedList
+            }
+        })
+    }
+    
+    private func backend2() {
+        // get the item that will be rewarded
+//        print("loaded backend 2")
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardId").observe(DataEventType.value) { snapshot in
+            if let value = snapshot.value as? String {
+                for menuItem in self.items {
+                    print("\(menuItem.key!)")
+                    if menuItem.key! == value {
+                        print("we have a match!")
+                        print("id: \(menuItem.key!)")
+                        print("price: \(menuItem.scanPrice!)")
+                        print("title: \(menuItem.title!)")
+                        self.hideLoading()
+                        self.updateViewsForItem(itemId: menuItem.key!)
+                    } else {
+                        print("no match")
+                    }
+                }
+            } else {
+                return
+            }
+        }
+    }
+    
+    private func updateViewsForItem(itemId: String?) {
+        // get the value of the item
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").child(itemId!).child("scanPrice").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? Int {
                 self.value = value
-            } else {
-                self.value = 10
+                // get the title of the item
+                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").child(itemId!).child("title").observe(DataEventType.value) { seondSnap in
+                    if let seoncdSalue = seondSnap.value as? String {
+                        self.rewardTitleValue = seoncdSalue
+                        self.rewardTitle.text = "Free \(seoncdSalue.uppercased())"
+                        self.findLocationCount()
+                    } else {
+                        self.rewardTitle.text = "Free Reward"
+                    }
+                }
             }
         }
-        
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardTitle").observe(DataEventType.value) { snapshot in
-            if let value = snapshot.value as? String {
-                self.rewardTitleValue = value
-                self.rewardTitle.text = "Free \(value.uppercased())"
-            } else {
-                self.rewardTitle.text = "Free Reward"
-            }
-        }
-        
+    }
+    
+    private func findLocationCount() {
         locations.removeAll()
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").observe(DataEventType.childAdded) { snapchat in
             if let value = snapchat.value as? [String : Any] {
