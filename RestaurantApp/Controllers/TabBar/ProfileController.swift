@@ -72,7 +72,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         
         cell.titleLabel.text = titles[indexPath.row]
         
-        if indexPath.row == 4 {
+        if cell.titleLabel.text == "Logout" {
             cell.titleLabel.textColor = UIColor.systemRed
         }
         

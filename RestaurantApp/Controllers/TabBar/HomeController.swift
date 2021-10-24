@@ -188,6 +188,15 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         return fab
     }()
     
+    let dishImage : UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.clipsToBounds = true
+        imageView.contentMode = UIView.ContentMode.scaleAspectFill
+        imageView.image = UIImage(named: "lightDISH")
+        return imageView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -228,7 +237,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         super.updateViewConstraints()
         
         view.addSubview(scrollView)
-        scrollView.contentSize = CGSize(width: view.frame.size.width, height: 850)
+        scrollView.contentSize = CGSize(width: view.frame.size.width, height: 950)
         scrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         scrollView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
@@ -325,6 +334,16 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         infoTableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
         infoTableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
         infoTableView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
+        dishImage.isUserInteractionEnabled = true
+        dishImage.addGestureRecognizer(tapGestureRecognizer)
+        
+        scrollView.addSubview(dishImage)
+        dishImage.topAnchor.constraint(equalTo: infoTableView.bottomAnchor, constant: 15).isActive = true
+        dishImage.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        dishImage.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        dishImage.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         view.addSubview(statusBarView)
         statusBarView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -622,6 +641,13 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     @objc func moveToOrder() {
         let controller = SelectLocationOrder()
         self.navigationController?.pushViewController(controller, animated: true)
+    }
+    
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        add3DMotion(withFeedbackStyle: UIImpactFeedbackGenerator.FeedbackStyle.medium)
+        if let url = URL(string: "https://dish-digital.netlify.app") {
+            UIApplication.shared.open(url)
+        }
     }
     
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {

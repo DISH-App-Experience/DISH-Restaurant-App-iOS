@@ -103,7 +103,7 @@ class RewardLocationCell: UICollectionViewCell {
         scanLabel.heightAnchor.constraint(equalToConstant: 93).isActive = true
         
         firstServiceView.addSubview(scanScansLabel)
-        scanScansLabel.topAnchor.constraint(equalTo: firstServiceView.topAnchor, constant: 21).isActive = true
+        scanScansLabel.topAnchor.constraint(equalTo: firstServiceView.topAnchor, constant: 30).isActive = true
         scanScansLabel.leftAnchor.constraint(equalTo: firstServiceView.leftAnchor).isActive = true
         scanScansLabel.rightAnchor.constraint(equalTo: firstServiceView.rightAnchor).isActive = true
         scanScansLabel.heightAnchor.constraint(equalToConstant: 130).isActive = true
