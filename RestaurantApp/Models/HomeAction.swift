@@ -12,5 +12,7 @@ class HomeAction: NSObject {
     var title : String?
     
     var image : UIImage?
+    
+    var link : String?
 
 }

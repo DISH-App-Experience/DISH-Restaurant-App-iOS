@@ -18,6 +18,7 @@
 		7809887F266F42680094306C /* ProfileInformationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7809887E266F42680094306C /* ProfileInformationController.swift */; };
 		78098883266F45D70094306C /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78098882266F45D70094306C /* User.swift */; };
 		781CE0B126C83E3600A7CA94 /* MainFAB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 781CE0B026C83E3600A7CA94 /* MainFAB.swift */; };
+		78202FFA272976C80060EA99 /* SocialCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78202FF9272976C80060EA99 /* SocialCell.swift */; };
 		782032E026C7248300E975B3 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782032DF26C7248300E975B3 /* PushNotificationManager.swift */; };
 		782032E226C7248C00E975B3 /* PushNotificationSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782032E126C7248B00E975B3 /* PushNotificationSender.swift */; };
 		782032E426C80E0400E975B3 /* RestaurantOwner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 782032E326C80E0400E975B3 /* RestaurantOwner.swift */; };
@@ -65,6 +66,7 @@
 		78878E8B26792082000A36B8 /* MenuCategoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78878E8A26792082000A36B8 /* MenuCategoryCell.swift */; };
 		78878E8D267921B7000A36B8 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78878E8C267921B7000A36B8 /* Category.swift */; };
 		7890BDAA26D72D52008423AD /* SuccessScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7890BDA926D72D52008423AD /* SuccessScreen.swift */; };
+		78947E772727582D006916C2 /* SocialObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78947E762727582D006916C2 /* SocialObject.swift */; };
 		7897F5EF266E85F000A05B41 /* MenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5EE266E85F000A05B41 /* MenuController.swift */; };
 		7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5F0266E85FB00A05B41 /* RewardsController.swift */; };
 		7897F5F3266E860700A05B41 /* ActionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7897F5F2266E860700A05B41 /* ActionController.swift */; };
@@ -121,6 +123,7 @@
 		7809887E266F42680094306C /* ProfileInformationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileInformationController.swift; sourceTree = "<group>"; };
 		78098882266F45D70094306C /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		781CE0B026C83E3600A7CA94 /* MainFAB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainFAB.swift; sourceTree = "<group>"; };
+		78202FF9272976C80060EA99 /* SocialCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialCell.swift; sourceTree = "<group>"; };
 		782032DF26C7248300E975B3 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		782032E126C7248B00E975B3 /* PushNotificationSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSender.swift; sourceTree = "<group>"; };
 		782032E326C80E0400E975B3 /* RestaurantOwner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestaurantOwner.swift; sourceTree = "<group>"; };
@@ -175,6 +178,7 @@
 		78878E8A26792082000A36B8 /* MenuCategoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCategoryCell.swift; sourceTree = "<group>"; };
 		78878E8C267921B7000A36B8 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		7890BDA926D72D52008423AD /* SuccessScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessScreen.swift; sourceTree = "<group>"; };
+		78947E762727582D006916C2 /* SocialObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialObject.swift; sourceTree = "<group>"; };
 		7897F5EE266E85F000A05B41 /* MenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuController.swift; sourceTree = "<group>"; };
 		7897F5F0266E85FB00A05B41 /* RewardsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RewardsController.swift; sourceTree = "<group>"; };
 		7897F5F2266E860700A05B41 /* ActionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionController.swift; sourceTree = "<group>"; };
@@ -256,6 +260,7 @@
 				7827494926CC01CA00A1F7DD /* OrderLocationCell.swift */,
 				7827495126CC156300A1F7DD /* OrderCell.swift */,
 				7803061B26CDB4C80096AD3A /* PaymentMethodCell.swift */,
+				78202FF9272976C80060EA99 /* SocialCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -358,6 +363,7 @@
 				78B20DD426C0CB460015B4CC /* RewardLocation.swift */,
 				7827494F26CC14FA00A1F7DD /* OrderObject.swift */,
 				7827495926CC627900A1F7DD /* OrderBundle.swift */,
+				78947E762727582D006916C2 /* SocialObject.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -724,6 +730,7 @@
 				7827494826C842DC00A1F7DD /* SelectLocationOrder.swift in Sources */,
 				7827495026CC14FA00A1F7DD /* OrderObject.swift in Sources */,
 				78586212266D109300FBC0DE /* ViewController.swift in Sources */,
+				78202FFA272976C80060EA99 /* SocialCell.swift in Sources */,
 				782032E426C80E0400E975B3 /* RestaurantOwner.swift in Sources */,
 				78AE637626B186E100F60E19 /* CreateReservationController.swift in Sources */,
 				78AA0E732678F8870055E09C /* ViewPhotoController.swift in Sources */,
@@ -743,6 +750,7 @@
 				7897F5F1266E85FB00A05B41 /* RewardsController.swift in Sources */,
 				78B20DCB26BED3000015B4CC /* Promotion.swift in Sources */,
 				78586220266D32EA00FBC0DE /* SignInController.swift in Sources */,
+				78947E772727582D006916C2 /* SocialObject.swift in Sources */,
 				781CE0B126C83E3600A7CA94 /* MainFAB.swift in Sources */,
 				78AE637826B1943F00F60E19 /* Reservation.swift in Sources */,
 				78419356266D0C79001E246E /* WelcomeController.swift in Sources */,
@@ -963,7 +971,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZH735L9VC9;
 				INFOPLIST_FILE = RestaurantApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -985,7 +993,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ZH735L9VC9;
 				INFOPLIST_FILE = RestaurantApp/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

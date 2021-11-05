@@ -63,6 +63,8 @@ class ReservationController: UIViewController, UITableViewDataSource, UITableVie
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
+        imageView.image = UIImage(systemName: "tray")
+        imageView.tintColor = Restaurant.shared.themeColor
         return imageView
     }()
 
@@ -102,7 +104,7 @@ class ReservationController: UIViewController, UITableViewDataSource, UITableVie
         tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16).isActive = true
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
+        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         
         view.addSubview(floatingActionButton)
         floatingActionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
@@ -153,12 +155,6 @@ class ReservationController: UIViewController, UITableViewDataSource, UITableVie
         nilTitle.centerXAnchor.constraint(equalTo: nilView.centerXAnchor).isActive = true
         nilTitle.bottomAnchor.constraint(equalTo: nilView.bottomAnchor).isActive = true
         nilTitle.heightAnchor.constraint(equalToConstant: 43).isActive = true
-        
-        nilView.addSubview(nilImageView)
-        nilImageView.topAnchor.constraint(equalTo: nilView.topAnchor).isActive = true
-        nilImageView.leftAnchor.constraint(equalTo: nilView.leftAnchor).isActive = true
-        nilImageView.rightAnchor.constraint(equalTo: nilView.rightAnchor).isActive = true
-        nilImageView.bottomAnchor.constraint(equalTo: nilTitle.topAnchor, constant: -32).isActive = true
     }
     
     private func showNilView() {
@@ -174,12 +170,14 @@ class ReservationController: UIViewController, UITableViewDataSource, UITableVie
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let reservations = self.reservations.count
         if reservations == 0 {
+            MBProgressHUD.hide(for: self.view, animated: true)
             showNilView()
         } else {
+            MBProgressHUD.hide(for: self.view, animated: true)
             hideNilView()
         }
         return reservations

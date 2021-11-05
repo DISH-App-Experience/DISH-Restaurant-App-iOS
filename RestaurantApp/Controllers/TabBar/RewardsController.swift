@@ -22,18 +22,33 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
     
     var collectionView : UICollectionView?
     
-    var currentPoints : Int? {
+    var total = 0 {
         didSet {
-            totalScansLabel.text = "\(currentPoints!)"
-            
             bigViewSingle.addSubview(rewardProgressLabel)
-            let attributedMutableTitle1 = NSMutableAttributedString(string: "\(currentPoints!) of ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColor])
-            attributedMutableTitle1.append(NSAttributedString(string: "\(value!)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.black), NSAttributedString.Key.foregroundColor : Restaurant.shared.themeColor]))
-            rewardProgressLabel.attributedText = attributedMutableTitle1
             rewardProgressLabel.topAnchor.constraint(equalTo: bigViewSingle.topAnchor, constant: 16).isActive = true
             rewardProgressLabel.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
             rewardProgressLabel.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
             rewardProgressLabel.heightAnchor.constraint(equalToConstant: 17).isActive = true
+            let attributedMutableTitle1 = NSMutableAttributedString(string: "\(total) of ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColor])
+            attributedMutableTitle1.append(NSAttributedString(string: "\(value!)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.black), NSAttributedString.Key.foregroundColor : Restaurant.shared.themeColor]))
+            rewardProgressLabel.attributedText = attributedMutableTitle1
+            totalScansLabel.text = "\(total)"
+        }
+    }
+    
+    var totalPoints = [0] {
+        didSet {
+            print("new value: ")
+            print(totalPoints)
+            var total = 0
+            for number in totalPoints {
+                print("adding \(number) to the total")
+                total += number
+            }
+            totalScansLabel.text = "\(total)"
+            self.total = total
+            
+            widthConstraint = rewardProgress.widthAnchor.constraint(equalToConstant: CGFloat(total))
         }
     }
     
@@ -95,7 +110,7 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
     
     let rewardTitle : UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.font = UIFont.boldSystemFont(ofSize: 14)
         label.textAlignment = NSTextAlignment.left
         label.textColor = Restaurant.shared.textColor
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -148,8 +163,6 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
         super.viewDidLoad()
         
         view.backgroundColor = Restaurant.shared.backgroundColor
-        
-        widthConstraint = rewardProgress.widthAnchor.constraint(equalToConstant: CGFloat(currentPoints ?? Int(CGFloat(0))))
 
         // Do any additional setup after loading the view.
     }
@@ -157,12 +170,8 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        showLoading()
         updateViewConstraints()
         backend1()
-        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 2) {
-            self.backend2()
-        }
         
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isHidden = true
@@ -218,6 +227,17 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
     }
     
     private func backend1() {
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardId").observe(DataEventType.value) { snapshot in
+            print("started func")
+            if let value = snapshot.value as? String {
+                self.backend12()
+            } else {
+                self.simpleAlert(title: "Error", message: "Manager has not implemented reward item")
+            }
+        }
+    }
+    
+    private func backend12() {
         items.removeAll()
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").observe(DataEventType.childAdded, with: { snapshot in
             if let value = snapshot.value as? [String : Any] {
@@ -237,14 +257,17 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                 self.items.removeAll()
                 self.items = sortedList
             }
+            self.backend2()
         })
     }
     
     private func backend2() {
         // get the item that will be rewarded
-//        print("loaded backend 2")
+        print("backend 2")
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardId").observe(DataEventType.value) { snapshot in
+            print("started func")
             if let value = snapshot.value as? String {
+                print("found value")
                 for menuItem in self.items {
                     print("\(menuItem.key!)")
                     if menuItem.key! == value {
@@ -252,14 +275,13 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                         print("id: \(menuItem.key!)")
                         print("price: \(menuItem.scanPrice!)")
                         print("title: \(menuItem.title!)")
-                        self.hideLoading()
                         self.updateViewsForItem(itemId: menuItem.key!)
                     } else {
                         print("no match")
                     }
                 }
             } else {
-                return
+                print("no item found")
             }
         }
     }
@@ -277,6 +299,7 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                         self.findLocationCount()
                     } else {
                         self.rewardTitle.text = "Free Reward"
+                        self.findLocationCount()
                     }
                 }
             }
@@ -299,8 +322,10 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                 self.locations.append(location)
             }
             if self.locations.count > 1 {
+                print("location count is more than 1")
                 self.setupMultiple()
             } else {
+                print("location count is 1 or less")
                 self.setupSingle()
             }
         }
@@ -313,14 +338,9 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                 let locationData = RewardLocation()
                 locationData.lastScanned = value["lastScanned"] as? Int
                 locationData.value = value["value"] as? Int
+                self.totalPoints.append(locationData.value ?? 0)
                 self.locationDatas.append(locationData)
             }
-            var total = 0
-            for location in self.locationDatas {
-                total += location.value!
-            }
-            print("total scans in all locations: \(total)")
-            self.currentPoints = total
             collectionViewStuff()
             constraints()
             delegates()
@@ -389,16 +409,16 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
             let key = snapshot.key
             Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(key).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
                 if let scanValue = snapshot.value as? Int {
-                    self.currentPoints = scanValue
+                    self.total = scanValue
                     let lengthOfTotal : Float = Float(self.view.frame.width - 82)
                     print("length of total: \(lengthOfTotal)")
                     let distanceForOne : Float = Float(lengthOfTotal / Float(self.value!))
                     print("distance for one: \(distanceForOne)")
-                    var rewardProgressLength : Float = Float(distanceForOne * Float(self.currentPoints!))
+                    var rewardProgressLength : Float = Float(distanceForOne * Float(self.total))
                     print("reward progress length: \(rewardProgressLength)")
                     print("reward progress length cgfloat: \(CGFloat(rewardProgressLength))")
                     
-                    if self.currentPoints! >= self.value! {
+                    if self.total >= self.value! {
                         self.motivationMessage.text = "Congrats! You have enough points to claim a \(self.rewardTitleValue!) by ordering via our app!"
                         rewardProgressLength = Float(distanceForOne) * Float(self.value!)
                     }
