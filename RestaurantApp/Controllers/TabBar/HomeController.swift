@@ -18,6 +18,24 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     // ADD RESTAURANT WEBSITEBELOW TO ADD ACCESS
     let websiteURL = ""
     
+    let callUs = HomeAction()
+    
+    let locations = HomeAction()
+    
+    let aboutUs = HomeAction()
+    
+    let twitter = HomeAction()
+    
+    let instagram = HomeAction()
+    
+    let facebook = HomeAction()
+    
+    var isTwitterEnabled = false
+    
+    var isInstagramEnabled = false
+    
+    var isFacebookEnabled = false
+    
     var actions = [HomeAction]() {
         didSet {
             actionCollectionView.reloadData()
@@ -222,7 +240,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         navigationController?.navigationBar.isHidden = true
         
         backend()
-        setupActions()
+        pullBackendDataOnSocialMedia()
         setupInfoActions()
         notification()
     }
@@ -396,7 +414,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         } else {
             switch self.actions[indexPath.row].title! {
             case "Call Us":
-                callUs()
+                callUsAction()
             case "About Us":
                 popAboutUsController()
             case "Locations":
@@ -404,7 +422,17 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
             case "Gallery":
                 pushToController(viewController: GalleryController())
             default:
-                print("other")
+                if self.actions[indexPath.row].title! == "Instagram" || self.actions[indexPath.row].title! == "Twitter" || self.actions[indexPath.row].title! == "Facebook" {
+                    if let string = self.actions[indexPath.row].link {
+                        if let url = URL(string: string) {
+                             UIApplication.shared.open(url, options: [:])
+                        }
+                    } else {
+                        self.simpleAlert(title: "Error", message: "Could not open action item (Unknown Title)")
+                    }
+                } else {
+                    self.simpleAlert(title: "Error", message: "Could not open action item due to type \(self.actions[indexPath.row].title!)")
+                }
             }
         }
     }
@@ -442,12 +470,10 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         switch self.infoActions[indexPath.row].title! {
         case "Rate Us":
             // ADD APP ID AFTER THE FORWARD SLASH ON THE URL BELOW TO CONNECT TO RATINGS!!
-            if let url = URL(string: "itms-apps://itunes.apple.com/app/") {
+            if let url = URL(string: "itms-apps://itunes.apple.com/app/1593084127") {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         case "Our Website":
-            // ADD RESTAURANT WEBSITE TS AND CS BELOW TO ADD ACCESS
-            let websiteURL = ""
             if let url = URL(string: websiteURL), UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url)
             }
@@ -550,20 +576,86 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         infoActions.append(contactUs)
     }
     
-    private func setupActions() {
+    private func pullBackendDataOnSocialMedia() {
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("instagramLink").observe(DataEventType.value) { snapshot in
+            if let value = snapshot.value as? String {
+                self.isInstagramEnabled = true
+                self.instagram.link = value
+                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("twitterLink").observe(DataEventType.value) { snapshot in
+                    if let value = snapshot.value as? String {
+                        self.isTwitterEnabled = true
+                        self.twitter.link = value
+                        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("facebookLink").observe(DataEventType.value) { snapshot in
+                            if let value = snapshot.value as? String {
+                                self.isFacebookEnabled = true
+                                self.facebook.link = value
+                                self.setupActions2()
+                            } else {
+                                self.setupActions2()
+                            }
+                        }
+                    } else {
+                        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("facebookLink").observe(DataEventType.value) { snapshot in
+                            if let value = snapshot.value as? String {
+                                self.isFacebookEnabled = true
+                                self.facebook.link = value
+                                self.setupActions2()
+                            } else {
+                                self.setupActions2()
+                            }
+                        }
+                    }
+                }
+            } else {
+                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("twitterLink").observe(DataEventType.value) { snapshot in
+                    if let value = snapshot.value as? String {
+                        self.isTwitterEnabled = true
+                        self.twitter.link = value
+                        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("facebookLink").observe(DataEventType.value) { snapshot in
+                            if let value = snapshot.value as? String {
+                                self.isFacebookEnabled = true
+                                self.facebook.link = value
+                                self.setupActions2()
+                            } else {
+                                self.setupActions2()
+                            }
+                        }
+                    } else {
+                        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("facebookLink").observe(DataEventType.value) { snapshot in
+                            if let value = snapshot.value as? String {
+                                self.isFacebookEnabled = true
+                                self.facebook.link = value
+                                self.setupActions2()
+                            } else {
+                                self.setupActions2()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    private func setupActions2() {
         self.actions.removeAll()
         
-        let callUs = HomeAction()
         callUs.title = "Call Us"
         callUs.image = UIImage(systemName: "phone.fill")!
         
-        let locations = HomeAction()
         locations.title = "Locations"
         locations.image = UIImage(systemName: "location.fill")!
         
-        let aboutUs = HomeAction()
         aboutUs.title = "About Us"
         aboutUs.image = UIImage(systemName: "info")!
+        
+        twitter.title = "Twitter"
+        twitter.image = UIImage(named: "twitter")!
+        
+        instagram.title = "Instagram"
+        instagram.image = UIImage(named: "instagram")!
+        
+        facebook.title = "Facebook"
+        facebook.image = UIImage(named: "facebook")!
         
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("features").child("imageGallery").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? Bool {
@@ -571,15 +663,32 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
                     let gallery = HomeAction()
                     gallery.title = "Gallery"
                     gallery.image = UIImage(systemName: "camera.fill")!
-                    
-                    self.actions.append(callUs)
-                    self.actions.append(locations)
-                    self.actions.append(aboutUs)
+                    self.actions.append(self.callUs)
+                    self.actions.append(self.locations)
+                    self.actions.append(self.aboutUs)
                     self.actions.append(gallery)
+                    if self.isInstagramEnabled {
+                        self.actions.append(self.instagram)
+                    }
+                    if self.isTwitterEnabled {
+                        self.actions.append(self.twitter)
+                    }
+                    if self.isFacebookEnabled {
+                        self.actions.append(self.facebook)
+                    }
                 } else {
-                    self.actions.append(callUs)
-                    self.actions.append(locations)
-                    self.actions.append(aboutUs)
+                    self.actions.append(self.callUs)
+                    self.actions.append(self.locations)
+                    self.actions.append(self.aboutUs)
+                    if self.isInstagramEnabled {
+                        self.actions.append(self.instagram)
+                    }
+                    if self.isTwitterEnabled {
+                        self.actions.append(self.twitter)
+                    }
+                    if self.isFacebookEnabled {
+                        self.actions.append(self.facebook)
+                    }
                 }
             }
         }
@@ -600,7 +709,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         print("success logging analytics")
     }
     
-    private func callUs() {
+    private func callUsAction() {
         analytics()
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("about").child("phoneNumber").observe(DataEventType.value) { snapshot in
             if let value = snapshot.value as? String {

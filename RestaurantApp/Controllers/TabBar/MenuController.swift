@@ -261,7 +261,7 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuItemCVCell.identifier, for: indexPath) as! MenuItemCVCell
             if isOutsideAll {
                 if let imageUrl = otherCatItems[indexPath.row].imageUrl {
-                    cell.itemImageView.sd_setImage(with: URL(string: imageUrl)!)
+                    cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
                 }
                 
                 if let title = otherCatItems[indexPath.row].title {
@@ -280,7 +280,7 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
             } else {
                 
                 if let imageUrl = items[indexPath.row].imageUrl {
-                    cell.itemImageView.sd_setImage(with: URL(string: imageUrl)!)
+                    cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
                 }
                 
                 if let title = items[indexPath.row].title {
@@ -353,7 +353,7 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
             
             if let imageUrl = otherCatItems[indexPath.row].imageUrl {
-                cell.itemImageView.sd_setImage(with: URL(string: imageUrl)!)
+                cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
             }
             
             if let title = otherCatItems[indexPath.row].title {
@@ -381,7 +381,7 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
             
             if let imageUrl = items[indexPath.row].imageUrl {
-                cell.itemImageView.sd_setImage(with: URL(string: imageUrl)!)
+                cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
             }
             
             if let title = items[indexPath.row].title {

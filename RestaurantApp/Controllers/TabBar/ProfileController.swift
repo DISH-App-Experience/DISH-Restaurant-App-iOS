@@ -72,9 +72,9 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         
         cell.titleLabel.text = titles[indexPath.row]
         
-        if cell.titleLabel.text == "Logout" {
-            cell.titleLabel.textColor = UIColor.systemRed
-        }
+//        if cell.titleLabel.text == "Logout" {
+//            cell.titleLabel.textColor = UIColor.systemRed
+//        }
         
         if user != nil {
             if let user = user {

@@ -22,7 +22,7 @@ class LoadingController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor.white
+        view.backgroundColor = UIColor.black
         updateViewConstraints()
 
         // Do any additional setup after loading the view.

@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import AppTrackingTransparency
 
 class SignInController: UIViewController, UITextFieldDelegate {
     
@@ -64,6 +65,7 @@ class SignInController: UIViewController, UITextFieldDelegate {
         
         updateViewConstraints()
         setupButtons()
+        appTracking()
 
         // Do any additional setup after loading the view.
     }
@@ -143,6 +145,26 @@ class SignInController: UIViewController, UITextFieldDelegate {
         let attribute5 = NSMutableAttributedString(string: "New to \(Restaurant.shared.name)? ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColor])
         attribute5.append(NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.foregroundColor : Restaurant.shared.themeColor, NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 15)]))
         signUpExtButton.setAttributedTitle(attribute5, for: UIControl.State.normal)
+    }
+    
+    private func appTracking() {
+        ATTrackingManager.requestTrackingAuthorization { status in
+            switch status {
+            case .authorized:
+                print("Authorized")
+            case .denied:
+                print("Denied")
+                ATTrackingManager.requestTrackingAuthorization { anotherStatus in
+                    print("denied again")
+                }
+            case .notDetermined:
+                print("Not Determined")
+            case .restricted:
+                print("Restricted")
+            @unknown default:
+                print("Unknown")
+            }
+        }
     }
     
     @objc func mainButtonPressed() {

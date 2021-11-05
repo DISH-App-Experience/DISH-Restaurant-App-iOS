@@ -19,8 +19,8 @@ class MenuItemCell: UITableViewCell {
         return view
     }()
     
-    let itemImageView : UIImageView = {
-        let imageView = UIImageView()
+    let itemImageView : MainImageView = {
+        let imageView = MainImageView()
         imageView.layer.cornerRadius = 37.5
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
         imageView.clipsToBounds = true
