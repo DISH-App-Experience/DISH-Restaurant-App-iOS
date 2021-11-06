@@ -118,8 +118,8 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
     
     private func completion() {
         birthdayNotification(withDate: birthdayDate)
-        hideLoading()
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            self.hideLoading()
             self.moveToTabbar()
         })
     }
@@ -144,6 +144,7 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
         genderPicker.dataSource = self
         
         birthdayPicker.datePickerMode = UIDatePicker.Mode.date
+        birthdayPicker.frame.size = CGSize(width: 0, height: 255)
         birthdayPicker.addTarget(self, action: #selector(birthdayPickerChanged), for: UIControl.Event.valueChanged)
         birthdayTextField.inputView = birthdayPicker
     }
