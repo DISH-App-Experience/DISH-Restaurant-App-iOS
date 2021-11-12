@@ -20,8 +20,8 @@ class EventsCell: UITableViewCell {
         return view
     }()
     
-    let itemImageView : MainImageView = {
-        let imageView = MainImageView()
+    let itemImageView : CustomImageView = {
+        let imageView = CustomImageView()
         imageView.layer.cornerRadius = 37.5
         imageView.clipsToBounds = true
         imageView.contentMode = UIView.ContentMode.scaleAspectFill

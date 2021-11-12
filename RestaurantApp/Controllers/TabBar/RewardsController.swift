@@ -1,483 +1,286 @@
 //
-//  RewardsController.swift
+//  ScanController.swift
 //  RestaurantApp
 //
-//  Created by JJ Zapata on 6/7/21.
+//  Created by JJ Zapata on 6/19/21.
 //
 
 import UIKit
 import Firebase
+import CoreLocation
+import AVFoundation
 
-class RewardsController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+var scannedID = ""
+
+class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMetadataOutputObjectsDelegate {
     
-    var locations = [Location]()
+    var captureSession = AVCaptureSession()
+    var videoPreviewLayer: AVCaptureVideoPreviewLayer?
+    var qrCodeFrameView: UIView?
     
-    var locationDatas = [RewardLocation]()
+    private let supportedCodeTypes = [AVMetadataObject.ObjectType.upce,
+                                      AVMetadataObject.ObjectType.code39,
+                                      AVMetadataObject.ObjectType.code39Mod43,
+                                      AVMetadataObject.ObjectType.code93,
+                                      AVMetadataObject.ObjectType.code128,
+                                      AVMetadataObject.ObjectType.ean8,
+                                      AVMetadataObject.ObjectType.ean13,
+                                      AVMetadataObject.ObjectType.aztec,
+                                      AVMetadataObject.ObjectType.pdf417,
+                                      AVMetadataObject.ObjectType.itf14,
+                                      AVMetadataObject.ObjectType.dataMatrix,
+                                      AVMetadataObject.ObjectType.interleaved2of5,
+                                      AVMetadataObject.ObjectType.qr]
     
-    var value : Int?
+    var video = AVCaptureVideoPreviewLayer()
     
-    var items = [MenuItem]()
+    var locationManager : CLLocationManager!
     
-    var rewardTitleValue : String?
-    
-    var collectionView : UICollectionView?
-    
-    var total = 0 {
-        didSet {
-            bigViewSingle.addSubview(rewardProgressLabel)
-            rewardProgressLabel.topAnchor.constraint(equalTo: bigViewSingle.topAnchor, constant: 16).isActive = true
-            rewardProgressLabel.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
-            rewardProgressLabel.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
-            rewardProgressLabel.heightAnchor.constraint(equalToConstant: 17).isActive = true
-            let attributedMutableTitle1 = NSMutableAttributedString(string: "\(total) of ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColor])
-            attributedMutableTitle1.append(NSAttributedString(string: "\(value!)", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14, weight: UIFont.Weight.black), NSAttributedString.Key.foregroundColor : Restaurant.shared.themeColor]))
-            rewardProgressLabel.attributedText = attributedMutableTitle1
-            totalScansLabel.text = "\(total)"
-        }
-    }
-    
-    var totalPoints = [0] {
-        didSet {
-            print("new value: ")
-            print(totalPoints)
-            var total = 0
-            for number in totalPoints {
-                print("adding \(number) to the total")
-                total += number
-            }
-            totalScansLabel.text = "\(total)"
-            self.total = total
-            
-            widthConstraint = rewardProgress.widthAnchor.constraint(equalToConstant: CGFloat(total))
-        }
-    }
-    
-    var widthConstraint: NSLayoutConstraint?
-    
-    var widthConstraintWithValue: NSLayoutConstraint?
-    
-    let topBanner : UIView = {
-        let view = UIView()
-        view.backgroundColor = Restaurant.shared.themeColor
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.layer.cornerRadius = 32
-        view.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        return view
-    }()
-    
-    let totalScansLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.boldSystemFont(ofSize: 75)
-        label.textAlignment = NSTextAlignment.center
-        label.textColor = Restaurant.shared.textColorOnButton
-        label.text = "0"
-        return label
-    }()
-    
-    let scansLabel : UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.boldSystemFont(ofSize: 22)
-        label.textAlignment = NSTextAlignment.center
-        label.textColor = Restaurant.shared.textColorOnButton
-        label.text = "Total Scans"
-        return label
-    }()
-    
-    let floatingActionButton : UIButton = {
+    private let backButton : UIButton = {
         let button = UIButton()
-        button.backgroundColor = Restaurant.shared.themeColor
-        button.layer.cornerRadius = 28
+        button.setImage(UIImage(systemName: "chevron.left"), for: UIControl.State.normal)
+        button.backgroundColor = UIColor.white
+        button.tintColor = UIColor.black
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.tintColor = UIColor.white
-        button.imageView?.tintColor = Restaurant.shared.textColorOnButton
-        button.addTarget(self, action: #selector(showScanController), for: UIControl.Event.touchUpInside)
-        button.setImage(UIImage(systemName: "camera")!, for: UIControl.State.normal)
+        button.layer.cornerRadius = 25
+        button.addTarget(self, action: #selector(popViewController), for: UIControl.Event.touchUpInside)
         return button
     }()
     
-    let bigViewSingle : UIView = {
-        let view = UIView()
-        view.backgroundColor = Restaurant.shared.backgroundColor
-        view.layer.shadowColor = UIColor.black.cgColor
-        view.layer.shadowOpacity = 0.1
-        view.layer.shadowRadius = 50
-        view.layer.cornerRadius = 15
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    let rewardTitle : UILabel = {
-        let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 14)
-        label.textAlignment = NSTextAlignment.left
-        label.textColor = Restaurant.shared.textColor
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    let secondaryBackColor : UIView = {
-        let view = UIView()
-        view.backgroundColor = Restaurant.shared.secondaryBackground
-        view.layer.cornerRadius = 13.5
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    let rewardProgress : UIView = {
-        let view = UIView()
-        view.backgroundColor = Restaurant.shared.themeColor
-        view.layer.cornerRadius = 13.5
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    let rewardProgressLabel : UILabel = {
-        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 14)
-        label.textAlignment = NSTextAlignment.right
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
-    let multipleView : UIView = {
-        let view = UIView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = Restaurant.shared.backgroundColor
-        return view
-    }()
-    
-    let motivationMessage : UILabel = {
-        let label = UILabel()
-        label.text = "Keep going! You’re almost there!"
-        label.font = UIFont.systemFont(ofSize: 12, weight: UIFont.Weight.regular)
-        label.textColor = UIColor.systemGray
-        label.numberOfLines = 100
-        label.textAlignment = NSTextAlignment.center
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
+    private let cameraView : UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.backgroundColor = Restaurant.shared.backgroundColor
+        imageView.layer.cornerRadius = 25
+        return imageView
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = Restaurant.shared.backgroundColor
+        updateViewConstraints()
+        
+        view.backgroundColor = Restaurant.shared.themeColor
+        
+        locationServices()
+        
+        // Get the back-facing camera for capturing videos
+        guard let captureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else {
+            print("Failed to get the camera device")
+            return
+        }
+        
+        do {
+            // Get an instance of the AVCaptureDeviceInput class using the previous device object
+            let input = try AVCaptureDeviceInput(device: captureDevice)
+            
+            // Set the input device on the capture session
+            captureSession.addInput(input)
+            
+            // Initialize a AVCaptureMetadataOutput object and set it as the output device to the capture session
+            let captureMetadataOutput = AVCaptureMetadataOutput()
+            captureSession.addOutput(captureMetadataOutput)
+            
+            // Set delegate and use the default dispatch queue to execute the call back
+            captureMetadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+//            captureMetadataOutput.metadataObjectTypes = [AVMetadataObject.ObjectType.qr]
+            captureMetadataOutput.metadataObjectTypes = supportedCodeTypes
+            
+            // Initialize the video preview layer and add it as a sublayer to the viewPreview view's layer
+            videoPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+            videoPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
+            videoPreviewLayer?.frame = view.layer.bounds
+            view.layer.addSublayer(videoPreviewLayer!)
+            
+            // Start video capture
+            captureSession.startRunning()
+            
+            // Initialize QR Code Frame to highlight the QR Code
+            qrCodeFrameView = UIView()
+            
+            if let qrcodeFrameView = qrCodeFrameView {
+                qrcodeFrameView.layer.borderColor = UIColor.yellow.cgColor
+                qrcodeFrameView.layer.borderWidth = 2
+                view.addSubview(qrcodeFrameView)
+                view.bringSubviewToFront(qrcodeFrameView)
+            }
+            
+        } catch {
+            // If any error occurs, simply print it out and don't continue anymore
+            print(error)
+            return
+        }
 
         // Do any additional setup after loading the view.
+    }
+    
+    func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        // Check if the metadataObjects array is not nil and it contains at least one object
+        if metadataObjects.count == 0 {
+            qrCodeFrameView?.frame = CGRect.zero
+            return
+        }
+        
+        // Get the metadata object
+        let metadataObj = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
+        
+        if supportedCodeTypes.contains(metadataObj.type) {
+            // If the found metadata is equal to the QR code metadata then update the status label's text and set the bounds
+            let barCodeObject = videoPreviewLayer?.transformedMetadataObject(for: metadataObj)
+            qrCodeFrameView?.frame = barCodeObject!.bounds
+            
+            if metadataObj.stringValue != nil {
+                self.storage(withName: String(describing: metadataObj.stringValue!))
+            }
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        updateViewConstraints()
-        backend1()
-        
-        navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isHidden = true
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         
-//        navigationController?.navigationBar.isHidden = false
+        navigationController?.navigationBar.isHidden = false
     }
     
     override func updateViewConstraints() {
         super.updateViewConstraints()
         
-        view.addSubview(topBanner)
-        topBanner.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        topBanner.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        topBanner.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        topBanner.heightAnchor.constraint(equalToConstant: 380).isActive = true
+        view.addSubview(backButton)
+        backButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 29).isActive = true
+        backButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 11).isActive = true
+        backButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        backButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
         
-        view.addSubview(floatingActionButton)
-        floatingActionButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
-        floatingActionButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
-        floatingActionButton.widthAnchor.constraint(equalToConstant: 56).isActive = true
-        floatingActionButton.heightAnchor.constraint(equalToConstant: 56).isActive = true
+//        view.addSubview(cameraView)
+//        cameraView.widthAnchor.constraint(equalToConstant: view.frame.size.width - 60).isActive = true
+//        cameraView.heightAnchor.constraint(equalToConstant: 285).isActive = true
+//        cameraView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+//        cameraView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+    }
+    
+    private func locationServices() {
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
         
-        topBanner.addSubview(totalScansLabel)
-        totalScansLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 143).isActive = true
-        totalScansLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        totalScansLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        totalScansLabel.heightAnchor.constraint(equalToConstant: 88).isActive = true
-        
-        topBanner.addSubview(scansLabel)
-        scansLabel.topAnchor.constraint(equalTo: totalScansLabel.bottomAnchor, constant: 6).isActive = true
-        scansLabel.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        scansLabel.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        scansLabel.heightAnchor.constraint(equalToConstant: 27).isActive = true
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
-    
-    @objc func showScanController() {
-        let controller = ScanController()
-        add3DMotion(withFeedbackStyle: UIImpactFeedbackGenerator.FeedbackStyle.medium)
-        self.navigationController?.pushViewController(controller, animated: true)
-    }
-    
-    private func delegates() {
-        collectionView?.delegate = self
-        collectionView?.dataSource = self
-    }
-    
-    private func backend1() {
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardId").observe(DataEventType.value) { snapshot in
-            print("started func")
-            if let value = snapshot.value as? String {
-                self.backend12()
-            } else {
-                self.simpleAlert(title: "Error", message: "Manager has not implemented reward item")
-            }
+        if !CLLocationManager.locationServicesEnabled() {
+            locationManager.requestWhenInUseAuthorization()
         }
     }
     
-    private func backend12() {
-        items.removeAll()
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").observe(DataEventType.childAdded, with: { snapshot in
-            if let value = snapshot.value as? [String : Any] {
-                let item = MenuItem()
-                item.title = value["title"] as? String
-                item.desc = value["description"] as? String
-                item.price = value["price"] as? Double
-                item.scanPrice = value["scanPrice"] as? Int
-                item.category = value["category"] as? String
-                item.imageUrl = value["image"] as? String
-                item.timestamp = value["time"] as? Int
-                item.key = value["key"] as? String ?? snapshot.key
-                self.items.append(item)
-            }
-            DispatchQueue.main.async {
-                let sortedList = self.items.sorted(by: { $1.timestamp! < $0.timestamp! } )
-                self.items.removeAll()
-                self.items = sortedList
-            }
-            self.backend2()
-        })
-    }
-    
-    private func backend2() {
-        // get the item that will be rewarded
-        print("backend 2")
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("rewards").child("rewardId").observe(DataEventType.value) { snapshot in
-            print("started func")
-            if let value = snapshot.value as? String {
-                print("found value")
-                for menuItem in self.items {
-                    print("\(menuItem.key!)")
-                    if menuItem.key! == value {
-                        print("we have a match!")
-                        print("id: \(menuItem.key!)")
-                        print("price: \(menuItem.scanPrice!)")
-                        print("title: \(menuItem.title!)")
-                        self.updateViewsForItem(itemId: menuItem.key!)
-                    } else {
-                        print("no match")
-                    }
+    private func showPopUp() {
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("lastScanned").observe(DataEventType.value) { snapshot in
+            if let lastScanned = snapshot.value as? Int {
+                let date = Date().timeIntervalSince1970
+                if Int(date) - lastScanned < 600 {
+                    self.simpleAlert(title: "Error", message: "Unrecognized Scan Card. Please try again later.")
+                } else {
+                    print("distance is \(Int(date) - lastScanned)")
+                    let alert = UIAlertController(title: "QR Found!", message: "Add 1 scan to your visit?", preferredStyle: UIAlertController.Style.alert)
+                    alert.addAction(UIAlertAction(title: "Add 1 Visit", style: UIAlertAction.Style.default, handler: { _ in
+                        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
+                            if let value = snapshot.value as? Int {
+                                print("existing value")
+                                let newNumber = Int(value + 1)
+                                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": Int(Date().timeIntervalSince1970)])
+                                scannedID = ""
+                                self.analytics()
+                                self.addSuccessNotification()
+                                self.completion()
+                            } else {
+                                print("new value")
+                                let newNumber = 1
+                                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": Int(Date().timeIntervalSince1970)])
+                                scannedID = ""
+                                self.analytics()
+                                self.addSuccessNotification()
+                                self.completion()
+                            }
+                        }
+                    }))
+                    self.present(alert, animated: true, completion: nil)
                 }
             } else {
-                print("no item found")
+                let alert = UIAlertController(title: "QR Found!", message: "Add 1 scan to your visit?", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "Add 1 Visit", style: UIAlertAction.Style.default, handler: { _ in
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
+                        if let value = snapshot.value as? Int {
+                            print("existing value")
+                            let newNumber = Int(value + 1)
+                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
+                            scannedID = ""
+                            self.analytics()
+                            self.addSuccessNotification()
+                            self.completion()
+                        } else {
+                            print("new value")
+                            let newNumber = 1
+                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
+                            scannedID = ""
+                            self.analytics()
+                            self.addSuccessNotification()
+                            self.completion()
+                        }
+                    }
+                }))
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
     
-    private func updateViewsForItem(itemId: String?) {
-        // get the value of the item
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").child(itemId!).child("scanPrice").observe(DataEventType.value) { snapshot in
-            if let value = snapshot.value as? Int {
-                self.value = value
-                // get the title of the item
-                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").child(itemId!).child("title").observe(DataEventType.value) { seondSnap in
-                    if let seoncdSalue = seondSnap.value as? String {
-                        self.rewardTitleValue = seoncdSalue
-                        self.rewardTitle.text = "Free \(seoncdSalue.uppercased())"
-                        self.findLocationCount()
-                    } else {
-                        self.rewardTitle.text = "Free Reward"
-                        self.findLocationCount()
+    private func analytics() {
+        let root = Database.database().reference().child("Analytics").child("rewardsCardsScans")
+        let key = root.childByAutoId().key
+        let params : [String : Any] = [
+            "userId" : Auth.auth().currentUser?.uid ?? "newUser",
+            "restaurantId" : Restaurant.shared.restaurantId,
+            "time" : Int(Date().timeIntervalSince1970)
+        ]
+        let feed : [String : Any] = [
+            key! : params
+        ]
+        root.updateChildValues(feed)
+        print("success logging analytics")
+    }
+    
+    func completion() {
+        let alert = UIAlertController(title: "Success!", message: "1 Visit Added", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Return Home", style: UIAlertAction.Style.default, handler: { _ in
+            self.moveToTabbar()
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    @objc func popViewController() {
+        self.navigationController?.popViewController(animated: true)
+    }
+    
+    private func storage(withName name: String) {
+        if name == "-MnTe7uMP5msL7izwZZY" {
+            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").child(name).child("lat").observeSingleEvent(of: DataEventType.value) { latSnap in
+                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").child(name).child("long").observeSingleEvent(of: DataEventType.value) { longSnap in
+                    if let lat = latSnap.value as? Double, let long = longSnap.value as? Double {
+                        let destination = CLLocation(latitude: lat, longitude: long)
+                        let current = CLLocation(latitude: self.locationManager.location!.coordinate.latitude, longitude: self.locationManager.location!.coordinate.longitude)
+                        let distance = current.distance(from: destination) // meters
+                        let maxRadius = 200 // meters
+                        if Int(distance) > maxRadius {
+                            self.addErrorNotification()
+                            self.simpleAlert(title: "Error", message: "You are too far away from the destination you claim to be at.")
+                        } else {
+                            // check if scanned again
+                            scannedID = name
+                            self.showPopUp()
+                        }
                     }
                 }
             }
         }
     }
     
-    private func findLocationCount() {
-        locations.removeAll()
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").observe(DataEventType.childAdded) { snapchat in
-            if let value = snapchat.value as? [String : Any] {
-                let location = Location()
-                location.city = value["city"] as? String
-                location.image = value["image"] as? String
-                location.lat = value["lat"] as? Double
-                location.long = value["long"] as? Double
-                location.state = value["state"] as? String
-                location.street = value["street"] as? String
-                location.zip = value["zip"] as? Int
-                location.key = snapchat.key
-                self.locations.append(location)
-            }
-            if self.locations.count > 1 {
-                print("location count is more than 1")
-                self.setupMultiple()
-            } else {
-                print("location count is 1 or less")
-                self.setupSingle()
-            }
-        }
-    }
-    
-    private func setupMultiple() {
-        locationDatas.removeAll()
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").observe(DataEventType.childAdded) { [self] snapshot in
-            if let value = snapshot.value as? [String : Any] {
-                let locationData = RewardLocation()
-                locationData.lastScanned = value["lastScanned"] as? Int
-                locationData.value = value["value"] as? Int
-                self.totalPoints.append(locationData.value ?? 0)
-                self.locationDatas.append(locationData)
-            }
-            collectionViewStuff()
-            constraints()
-            delegates()
-            collectionView!.reloadData()
-        }
-        
-        view.addSubview(multipleView)
-        multipleView.topAnchor.constraint(equalTo: topBanner.bottomAnchor).isActive = true
-        multipleView.leftAnchor.constraint(equalTo: topBanner.leftAnchor).isActive = true
-        multipleView.rightAnchor.constraint(equalTo: topBanner.rightAnchor).isActive = true
-        multipleView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        
-        view.bringSubviewToFront(floatingActionButton)
-    }
-    
-    private func collectionViewStuff() {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = UICollectionView.ScrollDirection.vertical
-        collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-    }
-    
-    private func constraints() {
-        view.addSubview(collectionView!)
-        collectionView?.register(RewardLocationCell.self, forCellWithReuseIdentifier: RewardLocationCell.identifier)
-        collectionView?.backgroundColor = UIColor.clear
-        collectionView?.showsVerticalScrollIndicator = false
-        collectionView?.showsHorizontalScrollIndicator = false
-        collectionView?.layer.masksToBounds = false
-        collectionView?.alwaysBounceVertical = false
-        collectionView?.translatesAutoresizingMaskIntoConstraints = false
-        collectionView?.topAnchor.constraint(equalTo: topBanner.bottomAnchor, constant: 16).isActive = true
-        collectionView?.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
-        collectionView?.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
-        collectionView?.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive = true
-        
-        view.bringSubviewToFront(floatingActionButton)
-        
-    }
-    
-    private func setupSingle() {
-        view.addSubview(bigViewSingle)
-        bigViewSingle.topAnchor.constraint(equalTo: topBanner.bottomAnchor, constant: 30).isActive = true
-        bigViewSingle.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
-        bigViewSingle.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
-        bigViewSingle.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        
-        bigViewSingle.addSubview(rewardTitle)
-        rewardTitle.topAnchor.constraint(equalTo: bigViewSingle.topAnchor, constant: 16).isActive = true
-        rewardTitle.leftAnchor.constraint(equalTo: bigViewSingle.leftAnchor, constant: 16).isActive = true
-        rewardTitle.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
-        rewardTitle.heightAnchor.constraint(equalToConstant: 17).isActive = true
-        
-        view.addSubview(secondaryBackColor)
-        secondaryBackColor.topAnchor.constraint(equalTo: rewardTitle.bottomAnchor, constant: 13).isActive = true
-        secondaryBackColor.leftAnchor.constraint(equalTo: bigViewSingle.leftAnchor, constant: 16).isActive = true
-        secondaryBackColor.rightAnchor.constraint(equalTo: bigViewSingle.rightAnchor, constant: -16).isActive = true
-        secondaryBackColor.heightAnchor.constraint(equalToConstant: 27).isActive = true
-        
-        view.addSubview(motivationMessage)
-        motivationMessage.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 50).isActive = true
-        motivationMessage.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -50).isActive = true
-        motivationMessage.topAnchor.constraint(equalTo: bigViewSingle.bottomAnchor).isActive = true
-        motivationMessage.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").observe(DataEventType.childAdded) { snapshot in
-            let key = snapshot.key
-            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(key).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
-                if let scanValue = snapshot.value as? Int {
-                    self.total = scanValue
-                    let lengthOfTotal : Float = Float(self.view.frame.width - 82)
-                    print("length of total: \(lengthOfTotal)")
-                    let distanceForOne : Float = Float(lengthOfTotal / Float(self.value!))
-                    print("distance for one: \(distanceForOne)")
-                    var rewardProgressLength : Float = Float(distanceForOne * Float(self.total))
-                    print("reward progress length: \(rewardProgressLength)")
-                    print("reward progress length cgfloat: \(CGFloat(rewardProgressLength))")
-                    
-                    if self.total >= self.value! {
-                        self.motivationMessage.text = "Congrats! You have enough points to claim a \(self.rewardTitleValue!) by ordering via our app!"
-                        rewardProgressLength = Float(distanceForOne) * Float(self.value!)
-                    }
-                    
-                    self.rewardProgress.removeFromSuperview()
-                    self.secondaryBackColor.addSubview(self.rewardProgress)
-                    self.rewardProgress.topAnchor.constraint(equalTo: self.secondaryBackColor.topAnchor).isActive = true
-                    self.rewardProgress.leftAnchor.constraint(equalTo: self.secondaryBackColor.leftAnchor).isActive = true
-                    self.rewardProgress.widthAnchor.constraint(equalToConstant: CGFloat(rewardProgressLength)).isActive = true
-                    self.rewardProgress.heightAnchor.constraint(equalToConstant: 27).isActive = true
-                }
-            }
-        }
-        print("done setting up single")
-    }
-    
-    // MARK: - UICollectionView Delegate & Data Source Functions
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if locations.count == 0 {
-            return 0
-        } else {
-            return locations.count
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RewardLocationCell.identifier, for: indexPath) as! RewardLocationCell
-        
-        cell.firstServiceView.layer.masksToBounds = false
-        
-        if let title = self.locations[indexPath.row].street {
-            cell.firstTitle.text = title
-        } else {
-            cell.firstTitle.text = "Untitled Location"
-        }
-        
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(locations[indexPath.row].key!).child("value").observe(DataEventType.value) { rewardSnap in
-            if let value = rewardSnap.value as? Int {
-                cell.scanLabel.text = "\(value)"
-            } else {
-                cell.scanLabel.text = "0"
-            }
-        }
-        
-        return cell
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("SELECTED IMAGE")
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let size = (self.collectionView!.frame.width / 2) - 10
-        return CGSize(width: size, height: size)
-    }
-
 }

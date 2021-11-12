@@ -620,7 +620,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
             cell.backgroundColor = Restaurant.shared.backgroundColor
             
             if let imageString = self.eventsList[indexPath.row].imageString {
-                cell.itemImageView.loadImage(from: URL(string: imageString)!)
+                cell.itemImageView.loadImageUsingUrlString(urlString: imageString)
             }
             
             if let title = self.eventsList[indexPath.row].name {

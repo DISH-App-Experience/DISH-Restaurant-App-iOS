@@ -14,7 +14,7 @@ class HomeMenuCell: UICollectionViewCell {
         didSet {
             if let item = menuItem {
                 if let url = item.imageUrl {
-                    imageView.sd_setImage(with: URL(string: url)!, completed: nil)
+                    imageView.loadImageUsingUrlString(urlString: url)
                 }
                 if let title = item.title {
                     titleLabel.text = title
@@ -36,8 +36,8 @@ class HomeMenuCell: UICollectionViewCell {
         return view
     }()
     
-    let imageView : UIImageView = {
-        let imageView = UIImageView()
+    let imageView : CustomImageView = {
+        let imageView = CustomImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
         imageView.backgroundColor = Restaurant.shared.secondaryBackground
