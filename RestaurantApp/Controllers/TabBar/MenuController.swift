@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import Kingfisher
 
 enum MenuLayout {
     case table, grid
@@ -42,6 +43,8 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
     }
     
     var categories = [Category]()
+    
+    var canOpen = false
     
     var chosenCategory = "All Items"
     
@@ -191,6 +194,7 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         items.removeAll()
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").observe(DataEventType.childAdded) { (snapshot) in
             if let value = snapshot.value as? [String : Any] {
+                print(value)
                 let item = MenuItem()
                 item.title = value["title"] as? String
                 item.desc = value["description"] as? String
@@ -205,6 +209,7 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
                 let sortedList = self.items.sorted(by: { $1.timestamp! < $0.timestamp! } )
                 self.items.removeAll()
                 self.items = sortedList
+                self.canOpen = true
                 self.tableView.reloadData()
                 self.menuCollectionView!.reloadData()
                 self.hideLoading()
@@ -260,8 +265,12 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuItemCVCell.identifier, for: indexPath) as! MenuItemCVCell
             if isOutsideAll {
-                if let imageUrl = otherCatItems[indexPath.row].imageUrl {
-                    cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
+                
+                if canOpen {
+                    if let imageUrl = otherCatItems[indexPath.row].imageUrl {
+                        //                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
+                        cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
+                    }
                 }
                 
                 if let title = otherCatItems[indexPath.row].title {
@@ -279,8 +288,11 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
                 return cell
             } else {
                 
-                if let imageUrl = items[indexPath.row].imageUrl {
-                    cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
+                if canOpen {
+                    if let imageUrl = items[indexPath.row].imageUrl {
+                        //                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
+                        cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
+                    }
                 }
                 
                 if let title = items[indexPath.row].title {
@@ -352,8 +364,11 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         if isOutsideAll {
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
             
-            if let imageUrl = otherCatItems[indexPath.row].imageUrl {
-                cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
+            if canOpen {
+                if let imageUrl = otherCatItems[indexPath.row].imageUrl {
+//                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
+                    cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
+                }
             }
             
             if let title = otherCatItems[indexPath.row].title {
@@ -380,8 +395,11 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
             
-            if let imageUrl = items[indexPath.row].imageUrl {
-                cell.itemImageView.loadImage(from: URL(string: imageUrl)!)
+            if canOpen {
+                if let imageUrl = items[indexPath.row].imageUrl {
+                    //                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
+                                        cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
+                }
             }
             
             if let title = items[indexPath.row].title {
@@ -421,3 +439,45 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
     }
 
 }
+
+let imageCache = NSCache<NSString, UIImage>()
+
+class CustomImageView: UIImageView {
+    
+    var imageUrlString: String?
+    
+    func loadImageUsingUrlString(urlString: String) {
+        
+        imageUrlString = urlString
+        
+        guard let url = URL(string: urlString) else { return }
+        
+        image = nil
+        
+        if let imageFromCache = imageCache.object(forKey: urlString as NSString) {
+            self.image = imageFromCache
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url, completionHandler: { (data, respones, error) in
+            
+            if error != nil {
+                print(error ?? "")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                guard let imageToCache = UIImage(data: data!) else { return }
+                
+                if self.imageUrlString == urlString {
+                    self.image = imageToCache
+                }
+                
+                imageCache.setObject(imageToCache, forKey: urlString as NSString)
+            }
+            
+        }).resume()
+    }
+    
+}
+
