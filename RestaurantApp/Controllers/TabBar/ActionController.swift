@@ -201,7 +201,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     private let eventImage : MainImageView = {
         let imageView = MainImageView()
-        imageView.layer.cornerRadius = 45
+        imageView.layer.cornerRadius = 10
         imageView.clipsToBounds = true
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -418,7 +418,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
                 self.eventsList.append(event)
             }
             print("there are \(self.eventsList.count) events")
-            let newArr = self.eventsList.sorted(by: { $1.date! > $0.date! } )
+            let newArr = self.eventsList.sorted(by: { $1.date! < $0.date! } )
             self.eventsList.removeAll()
             self.eventsList = newArr
             self.eventsTableView.reloadData()
@@ -440,7 +440,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
                 self.promosList.append(promo)
             }
             print("there are \(self.promosList.count) promotions")
-            let newArr = self.promosList.sorted(by: { $1.validUntil! > $0.validUntil! } )
+            let newArr = self.promosList.sorted(by: { $1.validUntil! < $0.validUntil! } )
             self.promosList.removeAll()
             self.promosList = newArr
             self.promosTableView.reloadData()
@@ -540,8 +540,8 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
         bigView.addSubview(eventImage)
         eventImage.bottomAnchor.constraint(equalTo: bigView.topAnchor, constant: 10).isActive = true
         eventImage.centerXAnchor.constraint(equalTo: bigView.centerXAnchor).isActive = true
-        eventImage.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        eventImage.widthAnchor.constraint(equalToConstant: 90).isActive = true
+        eventImage.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        eventImage.widthAnchor.constraint(equalToConstant: 150).isActive = true
     }
     
     private func showPromotionBlurView() {

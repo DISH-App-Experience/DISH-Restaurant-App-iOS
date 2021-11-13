@@ -50,9 +50,10 @@ class MenuItemController: UIViewController {
     
     let titleLabel : UILabel = {
         let label = UILabel()
-        label.font = UIFont.boldSystemFont(ofSize: 27)
+        label.font = UIFont.boldSystemFont(ofSize: 20)
         label.textColor = Restaurant.shared.textColor
         label.textAlignment = NSTextAlignment.left
+        label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -108,14 +109,14 @@ class MenuItemController: UIViewController {
         infoView.addSubview(priceLabel)
         priceLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30).isActive = true
         priceLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
-        priceLabel.widthAnchor.constraint(equalToConstant: 85).isActive = true
+        priceLabel.widthAnchor.constraint(equalToConstant: 110).isActive = true
         priceLabel.heightAnchor.constraint(equalToConstant: 33).isActive = true
         
         infoView.addSubview(titleLabel)
         titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 30).isActive = true
         titleLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
         titleLabel.rightAnchor.constraint(equalTo: priceLabel.leftAnchor, constant: -25).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 33).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
         infoView.addSubview(descriptionLabel)
         descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 13).isActive = true

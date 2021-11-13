@@ -7,7 +7,6 @@
 
 import UIKit
 import Firebase
-import Kingfisher
 
 enum MenuLayout {
     case table, grid
