@@ -34,11 +34,6 @@ class LocationsController: UIViewController, CLLocationManagerDelegate, MKMapVie
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
         
-        if let location = locationManager.location {
-            let region = MKCoordinateRegion.init(center: location.coordinate, latitudinalMeters: 4000, longitudinalMeters: 4000)
-            mapView.setRegion(region, animated: true)
-        }
-        
         updateViewConstraints()
         
         backend()
@@ -81,6 +76,8 @@ class LocationsController: UIViewController, CLLocationManagerDelegate, MKMapVie
             pin.coordinate = CLLocationCoordinate2D(latitude: location.lat!, longitude: location.long!)
             pin.title = "\(location.long!)"
             pin.subtitle = "\(location.lat!)"
+            let region = MKCoordinateRegion.init(center: pin.coordinate, latitudinalMeters: 1500, longitudinalMeters: 1500)
+            mapView.setRegion(region, animated: true)
             mapView.addAnnotation(pin)
         }
         hideLoading()
