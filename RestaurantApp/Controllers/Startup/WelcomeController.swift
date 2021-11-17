@@ -75,12 +75,22 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
         button.addTarget(self, action: #selector(signUpExtPressed), for: UIControl.Event.touchUpInside)
         return button
     }()
+    
+    let anonButton : UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.addTarget(self, action: #selector(anonSyncUp), for: UIControl.Event.touchUpInside)
+        button.setTitleColor(Restaurant.shared.themeColor, for: UIControl.State.normal)
+        button.titleLabel?.font = UIFont.systemFont(ofSize: 15)
+        return button
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = Restaurant.shared.backgroundColor
         
+        appTracking()
         updateViewConstraints()
         setupButtons()
         
@@ -143,10 +153,28 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
         emailButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         view.addSubview(signUpExtButton)
-        signUpExtButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
+        signUpExtButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -80).isActive = true
         signUpExtButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
         signUpExtButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
         signUpExtButton.heightAnchor.constraint(equalToConstant: 22).isActive = true
+        
+        Database.database().reference().child("Settings").child("anonUserShowing").observeSingleEvent(of: DataEventType.value) { snapshot in
+            if let value = snapshot.value as? Bool {
+                if value {
+                    self.addAnonUser()
+                }
+            } else {
+                return
+            }
+        }
+    }
+    
+    private func addAnonUser() {
+        view.addSubview(anonButton)
+        anonButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40).isActive = true
+        anonButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
+        anonButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
+        anonButton.heightAnchor.constraint(equalToConstant: 22).isActive = true
     }
     
     private func backend() {
@@ -174,6 +202,8 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
         let attribute5 = NSMutableAttributedString(string: "New to \(Restaurant.shared.name)? ", attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 15), NSAttributedString.Key.foregroundColor : Restaurant.shared.textColor])
         attribute5.append(NSAttributedString(string: "Sign Up", attributes: [NSAttributedString.Key.foregroundColor : Restaurant.shared.themeColor, NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 15)]))
         signUpExtButton.setAttributedTitle(attribute5, for: UIControl.State.normal)
+        
+        anonButton.setTitle("Authenticate Anonymously", for: UIControl.State.normal)
     }
     
     @objc func googleButtonPressed() {
@@ -202,6 +232,19 @@ class WelcomeController: UIViewController, GIDSignInDelegate, ASAuthorizationCon
     
     @objc func signUpExtPressed() {
         moveToController(controller: SignUpController())
+    }
+    
+    @objc func anonSyncUp() {
+        showLoading()
+        Auth.auth().signInAnonymously { result, error in
+            if error == nil {
+                self.hideLoading()
+                self.moveToTabbar()
+            } else {
+                self.hideLoading()
+                self.simpleAlert(title: "Error", message: error!.localizedDescription)
+            }
+        }
     }
     
     func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error?) {

@@ -15,6 +15,8 @@ class EventObject: NSObject {
     
     var date : Int?
     
+    var endDate : Int?
+    
     var location : String?
     
     var imageString : String?

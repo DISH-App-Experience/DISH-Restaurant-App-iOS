@@ -7,11 +7,14 @@
 
 import UIKit
 import Firebase
+import EventKit
 import MBProgressHUD
 
 class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: - Constants
+    
+    let eventStore : EKEventStore = EKEventStore()
     
     // MARK: - Variables
     
@@ -22,6 +25,8 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
     var eventsList = [EventObject]()
     
     var promosList = [Promotion]()
+    
+    var selectedEvent : EventObject?
     
     // MARK: - View Objects
     
@@ -206,6 +211,14 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
         imageView.contentMode = UIView.ContentMode.scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
+    }()
+    
+    private let eventButton : MainButton = {
+        let button = MainButton()
+        button.setTitle("Add to Apple Calendar", for: UIControl.State.normal)
+        button.backgroundColor = Restaurant.shared.themeColor
+        button.addTarget(self, action: #selector(addToCalendar), for: UIControl.Event.touchUpInside)
+        return button
     }()
     
     // MARK: - Overriden Functions
@@ -412,6 +425,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
                 event.name = value["name"] as? String
                 event.desc = value["desc"] as? String
                 event.date = value["date"] as? Int
+                event.endDate = value["endDate"] as? Int
                 event.location = value["location"] as? String
                 event.imageString = value["imageString"] as? String
                 event.key = value["key"] as? String ?? snapshot.key
@@ -548,6 +562,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
         view.bringSubviewToFront(blurView)
         UIView.animate(withDuration: 0.4) {
             self.blurView.alpha = 1
+            self.eventButton.alpha = 1
         }
     }
     
@@ -576,10 +591,37 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
     @objc func hidePromotionBlurView() {
         UIView.animate(withDuration: 0.4) {
             self.blurView.alpha = 0
+            self.eventButton.alpha = 0
         } completion: { completion in
             if completion {
                 self.clearPromoView()
                 self.view.sendSubviewToBack(self.blurView)
+            }
+        }
+    }
+    
+    @objc func addToCalendar() {
+        if let selected = selectedEvent {
+            eventStore.requestAccess(to: EKEntityType.event) { granted, error in
+                if granted && error == nil {
+                    let event : EKEvent = EKEvent(eventStore: self.eventStore)
+                    event.startDate = Date(timeIntervalSince1970: Double(selected.date!))
+                    event.endDate = Date(timeIntervalSince1970: Double(selected.endDate!))
+                    event.notes = selected.desc
+                    event.title = selected.name
+                    event.calendar = self.eventStore.defaultCalendarForNewEvents
+                    do {
+                        try self.eventStore.save(event, span: .thisEvent)
+                    } catch let error as NSError {
+                        self.simpleAlert(title: "Error, failed to save event", message: error.localizedDescription)
+                    }
+                    DispatchQueue.main.async {
+                        print("success")
+                        self.simpleAlert(title: "Success", message: "Added event to Apple Calendar")
+                    }
+                } else {
+                    print("failed to save event with error : \(error!.localizedDescription) or access not granted")
+                }
             }
         }
     }
@@ -673,8 +715,10 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch tableView {
         case eventsTableView:
+            selectedEvent = self.eventsList[indexPath.row]
+            
             let formatter = DateFormatter()
-            formatter.dateFormat = "E, MMM d yyyy"
+            formatter.dateFormat = "E, MMM d @ h:mma"
             
             self.dateHolderLabel.text = "Date:"
             self.timeHolderLabel.text = "Location:"
@@ -691,7 +735,14 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
             }
             
             self.eventImage.loadImage(from: URL(string: self.eventsList[indexPath.row].imageString!)!)
+            
             self.eventImage.alpha = 1
+            
+            blurView.contentView.addSubview(eventButton)
+            eventButton.topAnchor.constraint(equalTo: bigView.bottomAnchor, constant: 16).isActive = true
+            eventButton.leftAnchor.constraint(equalTo: bigView.leftAnchor).isActive = true
+            eventButton.rightAnchor.constraint(equalTo: bigView.rightAnchor).isActive = true
+            eventButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
             
             showPromotionBlurView()
         case promosTableView:
@@ -709,6 +760,8 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
             self.dateLabel.text = "\(formatter.string(from: Date(timeIntervalSince1970: TimeInterval(self.promosList[indexPath.row].validUntil!))))"
             self.timeLabel.text = self.promosList[indexPath.row].code!
             self.seatsLabel.text = self.promosList[indexPath.row].desc!
+            
+            eventButton.removeFromSuperview()
             
             showPromotionBlurView()
         default:

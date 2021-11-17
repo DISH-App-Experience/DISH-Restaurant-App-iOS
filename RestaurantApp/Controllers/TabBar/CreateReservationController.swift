@@ -34,6 +34,12 @@ class CreateReservationController: UIViewController, UITextFieldDelegate {
         return textField
     }()
     
+    let notesTF : MainTextField = {
+        let textField = MainTextField(placeholderString: "Notes:")
+        textField.keyboardType = UIKeyboardType.default
+        return textField
+    }()
+    
     let mainButton : MainButton = {
         let button = MainButton()
         button.backgroundColor = Restaurant.shared.themeColor
@@ -56,6 +62,8 @@ class CreateReservationController: UIViewController, UITextFieldDelegate {
     var clear3 = false
     
     var clear4 = false
+    
+    var clear5 = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,20 +136,31 @@ class CreateReservationController: UIViewController, UITextFieldDelegate {
         endTimeTF.widthAnchor.constraint(equalToConstant: (view.frame.size.width / 2) - 30).isActive = true
         endTimeTF.heightAnchor.constraint(equalToConstant: 44).isActive = true
         
+        view.addSubview(notesTF)
+        notesTF.delegate = self
+        notesTF.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 135).isActive = true
+        notesTF.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -25).isActive = true
+        notesTF.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 25).isActive = true
+        notesTF.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        
         view.addSubview(mainButton)
         mainButton.setAttributedTitle(NSAttributedString(string: "Request Reservation", attributes: [NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton, NSAttributedString.Key.font : UIFont.boldSystemFont(ofSize: 16)]), for: UIControl.State.normal)
-        mainButton.topAnchor.constraint(equalTo: endTimeTF.bottomAnchor, constant: 16).isActive = true
+        mainButton.topAnchor.constraint(equalTo: notesTF.bottomAnchor, constant: 16).isActive = true
         mainButton.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
         mainButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
         mainButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        clear2 = true
+        if textField == notesTF {
+            clear5 = true
+        } else {
+            clear2 = true
+        }
     }
     
     @objc func mainButtonPressed() {
-        if clear1, clear2, clear3, clear4 {
+        if clear1, clear2, clear3, clear4, clear5 {
             showLoading()
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
@@ -157,6 +176,7 @@ class CreateReservationController: UIViewController, UITextFieldDelegate {
                 "numberOfSeats" : Int(numberOfGuestsTF.text!)!,
                 "recipient" : Auth.auth().currentUser!.uid,
                 "status" : "pending",
+                "notes" : notesTF.text!,
                 "timeRequestSubmitted" : Int(Date().timeIntervalSince1970),
                 "userId" : lastName
             ]
