@@ -147,26 +147,6 @@ class SignInController: UIViewController, UITextFieldDelegate {
         signUpExtButton.setAttributedTitle(attribute5, for: UIControl.State.normal)
     }
     
-    private func appTracking() {
-        ATTrackingManager.requestTrackingAuthorization { status in
-            switch status {
-            case .authorized:
-                print("Authorized")
-            case .denied:
-                print("Denied")
-                ATTrackingManager.requestTrackingAuthorization { anotherStatus in
-                    print("denied again")
-                }
-            case .notDetermined:
-                print("Not Determined")
-            case .restricted:
-                print("Restricted")
-            @unknown default:
-                print("Unknown")
-            }
-        }
-    }
-    
     @objc func mainButtonPressed() {
         showLoading()
         if let email = emailTextfield.text, let password = passwordTextfield.text {
@@ -190,5 +170,28 @@ class SignInController: UIViewController, UITextFieldDelegate {
     @objc func signUpExtPressed() {
         add3DMotion(withFeedbackStyle: UIImpactFeedbackGenerator.FeedbackStyle.light)
         moveToController(controller: SignUpController())
+    }
+}
+
+extension UIViewController {
+    
+    func appTracking() {
+        ATTrackingManager.requestTrackingAuthorization { status in
+            switch status {
+            case .authorized:
+                print("Authorized")
+            case .denied:
+                print("Denied")
+                ATTrackingManager.requestTrackingAuthorization { anotherStatus in
+                    print("denied again")
+                }
+            case .notDetermined:
+                print("Not Determined")
+            case .restricted:
+                print("Restricted")
+            @unknown default:
+                print("Unknown")
+            }
+        }
     }
 }
