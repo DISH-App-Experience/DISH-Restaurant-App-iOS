@@ -88,7 +88,10 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
                 case 3:
                     let formatter = DateFormatter()
                     formatter.dateFormat = "MMM d, yyyy"
-                    cell.responseLabel.text = "\(formatter.string(from: Date(timeIntervalSince1970: TimeInterval(user.birthday!))))"
+                    let isoFormatter = ISO8601DateFormatter()
+                    let date = isoFormatter.date(from: user.birthday!)
+                    let string = formatter.string(from: date!)
+                    cell.responseLabel.text = string
                 default:
                     cell.responseLabel.text = ""
                 }
@@ -126,7 +129,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
         var firstName = String()
         var lastName = String()
         var gender = String()
-        var birthday = Int()
+        var birthday = String()
         
         let root = Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid)
         
@@ -137,7 +140,7 @@ class ProfileController: UIViewController, UITableViewDelegate, UITableViewDataS
                 root.child("gender").observe(DataEventType.value) { genderSS in
                     gender = genderSS.value as? String ?? "Error"
                     root.child("birthday").observe(DataEventType.value) { birthdaySS in
-                        birthday = birthdaySS.value as? Int ?? 0
+                        birthday = birthdaySS.value as? String ?? ""
                         let user = User()
                         user.firstName = firstName
                         user.lastName = lastName
