@@ -10,9 +10,11 @@ import Firebase
 
 class ProfileInformationController: UIViewController, UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     
-    var birthdayInt = Int()
+    var birthdayString = String()
     
     var birthdayDate = Date()
+    
+    var birthdayInt = String()
     
     var id : String? {
         didSet {
@@ -94,10 +96,13 @@ class ProfileInformationController: UIViewController, UITextFieldDelegate, UIPic
     func backend() {
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child(id!).observe(DataEventType.value) { snapshot in
             if self.id == "birthday" {
-                if let value = snapshot.value as? Int {
+                if let value = snapshot.value as? String {
                     let formatter = DateFormatter()
                     formatter.dateFormat = "MMM d, yyyy"
-                    self.emailTextfield.text = "\(formatter.string(from: Date(timeIntervalSince1970: TimeInterval(value))))"
+                    let isoFormatter = ISO8601DateFormatter()
+                    let date = isoFormatter.date(from: value)
+                    let string = formatter.string(from: date!)
+                    self.emailTextfield.text = string
                     self.dateTFP()
                 }
             } else if self.id == "gender" {
@@ -116,7 +121,7 @@ class ProfileInformationController: UIViewController, UITextFieldDelegate, UIPic
     @objc func mainButtonPressed() {
         showLoading()
         if self.id == "birthday" {
-            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child(self.id!).setValue(birthdayInt) { error, reference in
+            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child(self.id!).setValue(birthdayString) { error, reference in
                 if error == nil {
                     self.hideLoading()
                     self.simpleAlert(title: "Success", message: "Your information has been saved")
@@ -136,7 +141,7 @@ class ProfileInformationController: UIViewController, UITextFieldDelegate, UIPic
         birthdayPicker.datePickerMode = UIDatePicker.Mode.date
         birthdayPicker.frame.size = CGSize(width: 0, height: 250)
         birthdayPicker.addTarget(self, action: #selector(birthdayPickerChanged), for: UIControl.Event.valueChanged)
-        emailTextfield.inputView = birthdayPicker
+        emailTextfield.setInputViewDatePicker(target: self, selector: #selector(donePressed))
     }
     
     private func genderTFP() {
@@ -146,11 +151,29 @@ class ProfileInformationController: UIViewController, UITextFieldDelegate, UIPic
     }
     
     @objc func birthdayPickerChanged(datePicker: UIDatePicker) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM d, yyyy"
-        emailTextfield.text = dateFormatter.string(from: datePicker.date)
-        birthdayInt = Int(datePicker.date.timeIntervalSince1970)
-        birthdayDate = datePicker.date
+        if let datePicker = self.emailTextfield.inputView as? UIDatePicker {
+            let dateFormatter = DateFormatter()
+            let formatter = ISO8601DateFormatter()
+            dateFormatter.dateStyle = .medium
+            emailTextfield.text = dateFormatter.string(from: datePicker.date)
+            emailTextfield.text = dateFormatter.string(from: datePicker.date)
+            birthdayString = formatter.string(from: datePicker.date)
+            birthdayDate = datePicker.date
+        }
+        emailTextfield.resignFirstResponder()
+    }
+    
+    @objc func donePressed() {
+        if let datePicker = self.emailTextfield.inputView as? UIDatePicker {
+            let dateFormatter = DateFormatter()
+            let formatter = ISO8601DateFormatter()
+            dateFormatter.dateStyle = .medium
+            emailTextfield.text = dateFormatter.string(from: datePicker.date)
+            emailTextfield.text = dateFormatter.string(from: datePicker.date)
+            birthdayString = formatter.string(from: datePicker.date)
+            birthdayDate = datePicker.date
+        }
+        emailTextfield.resignFirstResponder()
     }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {

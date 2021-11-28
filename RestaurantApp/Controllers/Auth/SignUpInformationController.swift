@@ -14,7 +14,7 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
     
     var email : String?
     
-    var birthdayInt = Int()
+    var birthdayString = String()
     
     var birthdayDate = Date()
     
@@ -146,31 +146,19 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
         genderPicker.dataSource = self
         
         birthdayTextField.setInputViewDatePicker(target: self, selector: #selector(donePressed))
-        
-//        birthdayPicker.datePickerMode = UIDatePicker.Mode.date
-//        birthdayPicker.frame.size = CGSize(width: 0, height: 255)
-//        birthdayPicker.addTarget(self, action: #selector(birthdayPickerChanged), for: UIControl.Event.valueChanged)
-//        birthdayTextField.inputView = birthdayPicker
-        
     }
     
     @objc func donePressed() {
         if let datePicker = self.birthdayTextField.inputView as? UIDatePicker {
             let dateFormatter = DateFormatter()
+            let formatter = ISO8601DateFormatter()
             dateFormatter.dateStyle = .medium
             birthdayTextField.text = dateFormatter.string(from: datePicker.date)
-            birthdayInt = Int(datePicker.date.timeIntervalSince1970)
+            birthdayTextField.text = dateFormatter.string(from: datePicker.date)
+            birthdayString = formatter.string(from: datePicker.date)
             birthdayDate = datePicker.date
         }
         birthdayTextField.resignFirstResponder()
-    }
-    
-    @objc func birthdayPickerChanged(datePicker: UIDatePicker) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM d, yyyy"
-        birthdayTextField.text = dateFormatter.string(from: datePicker.date)
-        birthdayInt = Int(datePicker.date.timeIntervalSince1970)
-        birthdayDate = datePicker.date
     }
     
     @objc func mainButtonPressed() {
@@ -181,7 +169,7 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
                 "gender" : gender,
                 "firstName" : first,
                 "lastName" : last,
-                "birthday" : birthdayInt,
+                "birthday" : birthdayString,
                 "uid" : uid
             ]
             Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(uid).updateChildValues(params)
