@@ -14,7 +14,7 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
     
     var email : String?
     
-    var birthdayString = String()
+    var birthdayString : String?
     
     var birthdayDate = Date()
     
@@ -169,7 +169,7 @@ class SignUpInformationController: UIViewController, UITextFieldDelegate, UIPick
                 "gender" : gender,
                 "firstName" : first,
                 "lastName" : last,
-                "birthday" : birthdayString,
+                "birthday" : birthdayString ?? ISO8601DateFormatter().string(from: Date()),
                 "uid" : uid
             ]
             Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(uid).updateChildValues(params)

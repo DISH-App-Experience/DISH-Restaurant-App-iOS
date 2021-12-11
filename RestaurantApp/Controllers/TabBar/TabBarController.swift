@@ -38,18 +38,28 @@ class TabBarController: UITabBarController {
     }
     
     func tabBarCustomization() {
+        homeController.tabBarItem.badgeColor = Restaurant.shared.themeColor
+        homeController.tabBarItem.setBadgeTextAttributes([NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton], for: UIControl.State.normal)
         homeController.tabBarItem.image = UIImage(systemName: "house")
         homeController.tabBarItem.selectedImage = UIImage(systemName: "house.fill")
         
+        menuController.tabBarItem.badgeColor = Restaurant.shared.themeColor
+        menuController.tabBarItem.setBadgeTextAttributes([NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton], for: UIControl.State.normal)
         menuController.tabBarItem.image = UIImage(systemName: "book")
         menuController.tabBarItem.selectedImage = UIImage(systemName: "book.fill")
         
+        rewardsController.tabBarItem.badgeColor = Restaurant.shared.themeColor
+        actionController.tabBarItem.setBadgeTextAttributes([NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton], for: UIControl.State.normal)
         rewardsController.tabBarItem.image = UIImage(systemName: "crown")
         rewardsController.tabBarItem.selectedImage = UIImage(systemName: "crown.fill")
         
+        actionController.tabBarItem.badgeColor = Restaurant.shared.themeColor
+        actionController.tabBarItem.setBadgeTextAttributes([NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton], for: UIControl.State.normal)
         actionController.tabBarItem.image = UIImage(systemName: "message")
         actionController.tabBarItem.selectedImage = UIImage(systemName: "message.fill")
         
+        reservationController.tabBarItem.badgeColor = Restaurant.shared.themeColor
+        reservationController.tabBarItem.setBadgeTextAttributes([NSAttributedString.Key.foregroundColor : Restaurant.shared.textColorOnButton], for: UIControl.State.normal)
         reservationController.tabBarItem.image = UIImage(systemName: "calendar.badge.clock")
         reservationController.tabBarItem.selectedImage = UIImage(systemName: "calendar.badge.clock")
     }
@@ -61,6 +71,22 @@ class TabBarController: UITabBarController {
             if let value = snapshot.value as? Bool {
                 if value {
                     self.navigationControllers.append(self.actionController)
+                    Database.database().reference().child("Apps").child(self.appId).child("events").observe(DataEventType.childAdded) { promoSnap in
+                        if let value = promoSnap.value as? [String : Any] {
+                            if value.count > 0 {
+                                self.actionController.tabBarItem.badgeValue = "1"
+                            }
+                        }
+                    }
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("promotions").observe(DataEventType.childAdded) { promoSnap in
+                        if let value = promoSnap.value as? [String : Any] {
+                            if value.count > 0 {
+                                self.actionController.tabBarItem.badgeValue = "1"
+                            }
+                        } else {
+                            print("none")
+                        }
+                    }
                     self.checkRewards()
                 } else {
                     self.checkAnotherAction()
