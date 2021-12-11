@@ -36,6 +36,8 @@ target 'RestaurantApp' do
   pod 'Alamofire'
   
   pod 'Stripe'
+  
+  pod 'LGSegmentedControl'
 
   target 'RestaurantAppTests' do
     inherit! :search_paths

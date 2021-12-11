@@ -80,7 +80,13 @@ extension UIViewController {
         let controller = MenuItemController()
         controller.item = menuItem
         controller.modalPresentationStyle = UIModalPresentationStyle.popover
-        self.present(controller, animated: true, completion: nil)
+        
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.phone) {
+            self.present(controller, animated: true, completion: nil)
+        } else {
+            var popoverCntlr = UIPopoverController(contentViewController: controller)
+            popoverCntlr.present(from: CGRect(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 4, width: 0, height: 0),  in: self.view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
+        }
     }
     
     func popAboutUsController() {

@@ -113,6 +113,7 @@ PODS:
   - GTMSessionFetcher/Full (1.5.0):
     - GTMSessionFetcher/Core (= 1.5.0)
   - leveldb-library (1.22.1)
+  - LGSegmentedControl (1.2.1)
   - MBProgressHUD (1.2.0)
   - nanopb (2.30907.0):
     - nanopb/decode (= 2.30907.0)
@@ -143,6 +144,7 @@ DEPENDENCIES:
   - Firebase/Messaging
   - Firebase/Storage
   - GoogleSignIn
+  - LGSegmentedControl
   - MBProgressHUD
   - ReachabilitySwift
   - SDWebImage
@@ -172,6 +174,7 @@ SPEC REPOS:
     - GTMAppAuth
     - GTMSessionFetcher
     - leveldb-library
+    - LGSegmentedControl
     - MBProgressHUD
     - nanopb
     - PromisesObjC
@@ -203,6 +206,7 @@ SPEC CHECKSUMS:
   GTMAppAuth: 197a8dabfea5d665224aa00d17f164fc2248dab9
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   leveldb-library: 50c7b45cbd7bf543c81a468fe557a16ae3db8729
+  LGSegmentedControl: 80b6c522b0f0d98d3abfe15077cccf55a7641fe5
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   nanopb: 59221d7f958fb711001e6a449489542d92ae113e
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
@@ -213,6 +217,6 @@ SPEC CHECKSUMS:
   Stripe: 57c6997c64042a3f5aedae9b76e331942f8b75d2
   StripeCore: a6e50d58119a0c7601773b56f274db2d394dcdac
 
-PODFILE CHECKSUM: 0ab98d9132d5ec22cfdddf094f256e881bc6f213
+PODFILE CHECKSUM: acbfffcf315b01da5fd12648d1f9dcc7b4946cf1
 
 COCOAPODS: 1.10.1

@@ -8,6 +8,7 @@
 import UIKit
 import Firebase
 import EventKit
+import LGSegmentedControl
 import MBProgressHUD
 
 class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -222,7 +223,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }()
     
     // MARK: - Overriden Functions
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -448,7 +449,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
                 promo.name = value["name"] as? String
                 promo.desc = value["desc"] as? String
                 promo.date = value["date"] as? Int
-                promo.code = value["code"] as? String
+                promo.code = value["code"] as? String ?? "NONE"
                 promo.validUntil = value["validUntil"] as? Int
                 promo.key = value["key"] as? String ?? snapshot.key
                 self.promosList.append(promo)
@@ -691,7 +692,11 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
                 let formatter = DateFormatter()
                 formatter.dateFormat = "MMM d, yyyy"
                 let expirationDate = Date(timeIntervalSince1970: TimeInterval(validUntil))
-                cell.itemDescLabel.text = "VALID UNTIL: \(formatter.string(from: expirationDate)) - Use Code: \(code)."
+                if code == "NONE" || code == "" {
+                    cell.itemDescLabel.text = "VALID UNTIL: \(formatter.string(from: expirationDate))"
+                } else {
+                    cell.itemDescLabel.text = "VALID UNTIL: \(formatter.string(from: expirationDate)) - Use Code: \(code)."
+                }
             }
             
             return cell
