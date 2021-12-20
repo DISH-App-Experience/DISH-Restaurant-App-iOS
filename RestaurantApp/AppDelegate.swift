@@ -29,12 +29,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         StripeAPI.defaultPublishableKey = "pk_test_TYooMQauvdEDq54NiTphI7jx"
         
         // Pre Built Sign Out Code
-        //        let auth = Auth.auth()
-        //        do {
-        //            try auth.signOut()
-        //        } catch let error as NSError {
-        //            print("Error signing out: \(error.localizedDescription)")
-        //        }
+//                let auth = Auth.auth()
+//                do {
+//                    try auth.signOut()
+//                } catch let error as NSError {
+//                    print("Error signing out: \(error.localizedDescription)")
+//                }
         
         // Birthday Notifcation Authorization Handler
         let center = UNUserNotificationCenter.current()

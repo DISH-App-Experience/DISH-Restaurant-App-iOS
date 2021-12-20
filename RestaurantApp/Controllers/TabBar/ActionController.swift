@@ -8,7 +8,6 @@
 import UIKit
 import Firebase
 import EventKit
-import LGSegmentedControl
 import MBProgressHUD
 
 class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -223,7 +222,7 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }()
     
     // MARK: - Overriden Functions
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -722,34 +721,43 @@ class ActionController: UIViewController, UITableViewDelegate, UITableViewDataSo
         case eventsTableView:
             selectedEvent = self.eventsList[indexPath.row]
             
-            let formatter = DateFormatter()
-            formatter.dateFormat = "E, MMM d @ h:mma"
-            
-            self.dateHolderLabel.text = "Date:"
-            self.timeHolderLabel.text = "Location:"
-            self.seatsHolderLabel.text = "Description:"
-            
-            self.titleLabel.text = self.eventsList[indexPath.row].name ?? "Event"
-            self.dateLabel.text = "\(formatter.string(from: Date(timeIntervalSince1970: TimeInterval(self.eventsList[indexPath.row].date!))))"
-            self.seatsLabel.text = self.eventsList[indexPath.row].desc!
-            
-            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").child(self.eventsList[indexPath.row].location!).child("street").observe(DataEventType.value) { snapshot in
-                if let streetString = snapshot.value as? String {
-                    self.timeLabel.text = streetString
-                }
+            let controller = EventController()
+            controller.event = selectedEvent
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.phone) {
+                self.present(controller, animated: true, completion: nil)
+            } else {
+                var popoverCntlr = UIPopoverController(contentViewController: controller)
+                popoverCntlr.present(from: CGRect(x: self.view.frame.size.width / 2, y: self.view.frame.size.height / 4, width: 0, height: 0),  in: self.view, permittedArrowDirections: UIPopoverArrowDirection.any, animated: true)
             }
             
-            self.eventImage.loadImage(from: URL(string: self.eventsList[indexPath.row].imageString!)!)
-            
-            self.eventImage.alpha = 1
-            
-            blurView.contentView.addSubview(eventButton)
-            eventButton.topAnchor.constraint(equalTo: bigView.bottomAnchor, constant: 16).isActive = true
-            eventButton.leftAnchor.constraint(equalTo: bigView.leftAnchor).isActive = true
-            eventButton.rightAnchor.constraint(equalTo: bigView.rightAnchor).isActive = true
-            eventButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
-            
-            showPromotionBlurView()
+//            let formatter = DateFormatter()
+//            formatter.dateFormat = "E, MMM d @ h:mma"
+//
+//            self.dateHolderLabel.text = "Date:"
+//            self.timeHolderLabel.text = "Location:"
+//            self.seatsHolderLabel.text = "Description:"
+//
+//            self.titleLabel.text = self.eventsList[indexPath.row].name ?? "Event"
+//            self.dateLabel.text = "\(formatter.string(from: Date(timeIntervalSince1970: TimeInterval(self.eventsList[indexPath.row].date!))))"
+//            self.seatsLabel.text = self.eventsList[indexPath.row].desc!
+//
+//            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("locations").child(self.eventsList[indexPath.row].location!).child("street").observe(DataEventType.value) { snapshot in
+//                if let streetString = snapshot.value as? String {
+//                    self.timeLabel.text = streetString
+//                }
+//            }
+//
+//            self.eventImage.loadImage(from: URL(string: self.eventsList[indexPath.row].imageString!)!)
+//
+//            self.eventImage.alpha = 1
+//
+//            blurView.contentView.addSubview(eventButton)
+//            eventButton.topAnchor.constraint(equalTo: bigView.bottomAnchor, constant: 16).isActive = true
+//            eventButton.leftAnchor.constraint(equalTo: bigView.leftAnchor).isActive = true
+//            eventButton.rightAnchor.constraint(equalTo: bigView.rightAnchor).isActive = true
+//            eventButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+//
+//            showPromotionBlurView()
         case promosTableView:
             let formatter = DateFormatter()
             formatter.dateFormat = "E, MMM d yyyy"
