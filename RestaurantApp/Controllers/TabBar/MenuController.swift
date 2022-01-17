@@ -17,25 +17,8 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
     var layout : MenuLayout = MenuLayout.table {
         didSet {
             if layout == MenuLayout.table {
-                print("moving to table")
                 UIView.animate(withDuration: 0.5) {
-                    self.menuCollectionView!.alpha = 0
-                } completion: { completion in
-                    if completion {
-                        UIView.animate(withDuration: 0.5) {
-                            self.tableView.alpha = 1
-                        }
-                    }
-                }
-            } else if layout == MenuLayout.grid {
-                UIView.animate(withDuration: 0.5) {
-                    self.tableView.alpha = 0
-                } completion: { completion in
-                    if completion {
-                        UIView.animate(withDuration: 0.5) {
-                            self.menuCollectionView!.alpha = 1
-                        }
-                    }
+                    self.tableView.alpha = 1
                 }
             }
         }
@@ -59,7 +42,9 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
     
     var categoryCollectionView : UICollectionView?
     
-    var menuCollectionView : UICollectionView?
+    var usesImages = true
+    
+    var swapBtn : UIBarButtonItem?
     
     public var tableView : UITableView = {
         let tableView = UITableView()
@@ -93,8 +78,6 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         navigationController?.navigationBar.tintColor = Restaurant.shared.themeColor
         
         navigationItem.title = "Menu"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "arrow.left.arrow.right")!, style: UIBarButtonItem.Style.done, target: self, action: #selector(changeLayout))
-        
     }
     
     override func updateViewConstraints() {
@@ -124,30 +107,11 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(MenuItemCell.self, forCellReuseIdentifier: MenuItemCell.identifier)
+        tableView.register(NoImageMenuItemCell.self, forCellReuseIdentifier: NoImageMenuItemCell.identifier)
         tableView.topAnchor.constraint(equalTo: categoryCollectionView!.bottomAnchor, constant: 27).isActive = true
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 25).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -25).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
-        
-        let layou2: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layou2.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        layou2.scrollDirection = .vertical
-        menuCollectionView = UICollectionView(frame: CGRect.zero, collectionViewLayout: layou2)
-        if let mCV = menuCollectionView {
-            mCV.backgroundColor = Restaurant.shared.backgroundColor
-            mCV.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(mCV)
-            mCV.delegate = self
-            mCV.showsVerticalScrollIndicator = false
-            mCV.alwaysBounceHorizontal = false
-            mCV.alwaysBounceVertical = true
-            mCV.register(MenuItemCVCell.self, forCellWithReuseIdentifier: MenuItemCVCell.identifier)
-            mCV.dataSource = self
-            mCV.topAnchor.constraint(equalTo: tableView.topAnchor).isActive = true
-            mCV.leftAnchor.constraint(equalTo: tableView.leftAnchor).isActive = true
-            mCV.rightAnchor.constraint(equalTo: tableView.rightAnchor).isActive = true
-            mCV.bottomAnchor.constraint(equalTo: tableView.bottomAnchor).isActive = true
-        }
     }
     
     private func analytics() {
@@ -210,7 +174,6 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
                 self.items = sortedList
                 self.canOpen = true
                 self.tableView.reloadData()
-                self.menuCollectionView!.reloadData()
                 self.hideLoading()
                 print("done finding menu")
             }
@@ -228,8 +191,17 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
     }
     
     private func backend() {
-        checkCategories()
-        checkItems()
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("usesMenuImages").observeSingleEvent(of: DataEventType.value) { snapshot in
+            if let value = snapshot.value as? Bool {
+                self.usesImages = value
+                self.checkCategories()
+                self.checkItems()
+            } else {
+                self.usesImages = true
+                self.checkCategories()
+                self.checkItems()
+            }
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -237,37 +209,64 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if collectionView == self.categoryCollectionView! {
-            return categories.count
-        } else {
-            if isOutsideAll {
-                return otherCatItems.count
-            } else {
-                return items.count
-            }
-        }
+        return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if collectionView == self.categoryCollectionView! {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuCategoryCell.identifier, for: indexPath) as! MenuCategoryCell
-            cell.backgroundColor = Restaurant.shared.secondaryBackground
-            cell.layer.cornerRadius = 10
-            cell.category = categories[indexPath.row]
-            if categories[indexPath.row].selected! {
-                cell.layer.borderColor = Restaurant.shared.themeColor.cgColor
-                cell.layer.borderWidth = 2
-            } else {
-                cell.layer.borderWidth = 0
-            }
-            return cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuCategoryCell.identifier, for: indexPath) as! MenuCategoryCell
+        cell.backgroundColor = Restaurant.shared.secondaryBackground
+        cell.layer.cornerRadius = 10
+        cell.category = categories[indexPath.row]
+        if categories[indexPath.row].selected! {
+            cell.layer.borderColor = Restaurant.shared.themeColor.cgColor
+            cell.layer.borderWidth = 2
         } else {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MenuItemCVCell.identifier, for: indexPath) as! MenuItemCVCell
+            cell.layer.borderWidth = 0
+        }
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        for category in categories {
+            category.selected! = false
+        }
+        chosenCategory = categories[indexPath.row].name!
+        categories[indexPath.row].selected = true
+        chosenCategoryBig = categories[indexPath.row]
+        if indexPath.item == 0 {
+            isOutsideAll = false
+        } else {
+            isOutsideAll = true
+            otherCatItems.removeAll()
+            otherCatItems = items.filter { $0.category! == categories[indexPath.row].key! }
+        }
+        categoryCollectionView!.reloadData()
+        tableView.reloadData()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        return CGSize(width: estimateFrameForText(text: categories[indexPath.row].name!).width + 30, height: 44)
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if isOutsideAll {
+            return otherCatItems.count
+        } else {
+            return items.count
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if usesImages {
             if isOutsideAll {
+                let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
                 
                 if canOpen {
                     if let imageUrl = otherCatItems[indexPath.row].imageUrl {
-                        //                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
                         cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
                     }
                 }
@@ -284,13 +283,22 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
                     cell.itemPriceLabel.text = "$\(price)"
                 }
                 
+                if let category = otherCatItems[indexPath.row].category {
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("categories").child(category).child("name").observe(DataEventType.value) { (snapshot) in
+                        if let value = snapshot.value as? String {
+                            cell.itemCatLabel.text = "(\(value))"
+                        }
+                    }
+                }
+                
                 return cell
             } else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
                 
                 if canOpen {
                     if let imageUrl = items[indexPath.row].imageUrl {
                         //                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
-                        cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
+                                            cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
                     }
                 }
                 
@@ -306,122 +314,66 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
                     cell.itemPriceLabel.text = "$\(price)"
                 }
                 
+                if let category = items[indexPath.row].category {
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("categories").child(category).child("name").observe(DataEventType.value) { (snapshot) in
+                        if let value = snapshot.value as? String {
+                            cell.itemCatLabel.text = "(\(value))"
+                        }
+                    }
+                }
+                
                 return cell
             }
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if collectionView == self.categoryCollectionView! {
-            for category in categories {
-                category.selected! = false
-            }
-            chosenCategory = categories[indexPath.row].name!
-            categories[indexPath.row].selected = true
-            chosenCategoryBig = categories[indexPath.row]
-            if indexPath.item == 0 {
-                isOutsideAll = false
-            } else {
-                isOutsideAll = true
-                otherCatItems.removeAll()
-                otherCatItems = items.filter { $0.category! == categories[indexPath.row].key! }
-            }
-            categoryCollectionView!.reloadData()
-            tableView.reloadData()
-            menuCollectionView!.reloadData()
         } else {
             if isOutsideAll {
-                showMenuItem(menuItem: otherCatItems[indexPath.row])
+                let cell = tableView.dequeueReusableCell(withIdentifier: NoImageMenuItemCell.identifier, for: indexPath) as! NoImageMenuItemCell
+                
+                if let title = otherCatItems[indexPath.row].title {
+                    cell.itemTitleLabel.text = title
+                }
+                
+                if let desc = otherCatItems[indexPath.row].desc {
+                    cell.itemDescLabel.text = desc
+                }
+                
+                if let price = otherCatItems[indexPath.row].price {
+                    cell.itemPriceLabel.text = "$\(price)"
+                }
+                
+                if let category = otherCatItems[indexPath.row].category {
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("categories").child(category).child("name").observe(DataEventType.value) { (snapshot) in
+                        if let value = snapshot.value as? String {
+                            cell.itemCatLabel.text = "(\(value))"
+                        }
+                    }
+                }
+                
+                return cell
             } else {
-                showMenuItem(menuItem: items[indexPath.row])
-            }
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if collectionView == self.categoryCollectionView! {
-            return CGSize(width: estimateFrameForText(text: categories[indexPath.row].name!).width + 30, height: 44)
-        } else {
-            print("calc size")
-            return CGSize(width: (self.menuCollectionView!.frame.size.width / 2) - 10, height: 192)
-        }
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if isOutsideAll {
-            return otherCatItems.count
-        } else {
-            return items.count
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if isOutsideAll {
-            let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
-            
-            if canOpen {
-                if let imageUrl = otherCatItems[indexPath.row].imageUrl {
-//                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
-                    cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
+                let cell = tableView.dequeueReusableCell(withIdentifier: NoImageMenuItemCell.identifier, for: indexPath) as! NoImageMenuItemCell
+                
+                if let title = items[indexPath.row].title {
+                    cell.itemTitleLabel.text = title
                 }
-            }
-            
-            if let title = otherCatItems[indexPath.row].title {
-                cell.itemTitleLabel.text = title
-            }
-            
-            if let desc = otherCatItems[indexPath.row].desc {
-                cell.itemDescLabel.text = desc
-            }
-            
-            if let price = otherCatItems[indexPath.row].price {
-                cell.itemPriceLabel.text = "$\(price)"
-            }
-            
-            if let category = otherCatItems[indexPath.row].category {
-                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("categories").child(category).child("name").observe(DataEventType.value) { (snapshot) in
-                    if let value = snapshot.value as? String {
-                        cell.itemCatLabel.text = "(\(value))"
+                
+                if let desc = items[indexPath.row].desc {
+                    cell.itemDescLabel.text = desc
+                }
+                
+                if let price = items[indexPath.row].price {
+                    cell.itemPriceLabel.text = "$\(price)"
+                }
+                
+                if let category = items[indexPath.row].category {
+                    Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("categories").child(category).child("name").observe(DataEventType.value) { (snapshot) in
+                        if let value = snapshot.value as? String {
+                            cell.itemCatLabel.text = "(\(value))"
+                        }
                     }
                 }
+                
+                return cell
             }
-            
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as! MenuItemCell
-            
-            if canOpen {
-                if let imageUrl = items[indexPath.row].imageUrl {
-                    //                    downloadImage(urlString: imageUrl, imageView: cell.itemImageView)
-                                        cell.itemImageView.loadImageUsingUrlString(urlString: imageUrl)
-                }
-            }
-            
-            if let title = items[indexPath.row].title {
-                cell.itemTitleLabel.text = title
-            }
-            
-            if let desc = items[indexPath.row].desc {
-                cell.itemDescLabel.text = desc
-            }
-            
-            if let price = items[indexPath.row].price {
-                cell.itemPriceLabel.text = "$\(price)"
-            }
-            
-            if let category = items[indexPath.row].category {
-                Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("categories").child(category).child("name").observe(DataEventType.value) { (snapshot) in
-                    if let value = snapshot.value as? String {
-                        cell.itemCatLabel.text = "(\(value))"
-                    }
-                }
-            }
-            
-            return cell
         }
     }
     
@@ -434,7 +386,11 @@ class MenuController: UIViewController, UICollectionViewDelegateFlowLayout, UICo
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 114
+        if usesImages {
+            return 114
+        } else {
+            return 83
+        }
     }
 
 }

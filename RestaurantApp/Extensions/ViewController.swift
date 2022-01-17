@@ -152,6 +152,12 @@ extension UIViewController {
         return Int(NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: CGFloat(fontSize)), NSAttributedString.Key.foregroundColor : UIColor.white], context: nil).height)
     }
     
+    func estimateWidthFromText(text: String, fontSize: Int) -> Int {
+        let size = CGSize(width: 200, height: 1000)
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        return Int(NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: CGFloat(fontSize)), NSAttributedString.Key.foregroundColor : UIColor.white], context: nil).width)
+    }
+    
 }
 
 extension MainTextField {
