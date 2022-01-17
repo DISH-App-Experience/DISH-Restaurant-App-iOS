@@ -36,6 +36,10 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     var isFacebookEnabled = false
     
+    var usesImages = true
+    
+    var titles = ["burgers", "salads", "sides", "drinks"]
+    
     var actions = [HomeAction]() {
         didSet {
             actionCollectionView.reloadData()
@@ -149,6 +153,7 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(HomeMenuCell.self, forCellWithReuseIdentifier: HomeMenuCell.identifier)
+        collectionView.register(HomeCategoryCell.self, forCellWithReuseIdentifier: HomeCategoryCell.identifier)
         collectionView.backgroundColor = UIColor.clear
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.alwaysBounceVertical = false
@@ -388,7 +393,11 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView == self.menuCollectionView {
-            return self.menutItems.count
+            if usesImages {
+                return self.menutItems.count
+            } else {
+                return titles.count
+            }
         } else {
             return self.actions.count
         }
@@ -396,10 +405,16 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if collectionView == self.menuCollectionView {
-            let cell = menuCollectionView.dequeueReusableCell(withReuseIdentifier: HomeMenuCell.identifier, for: indexPath) as! HomeMenuCell
-            cell.menuItem = self.menutItems[indexPath.row]
-            cell.backgroundColor = UIColor.clear
-            return cell
+            if usesImages {
+                let cell = menuCollectionView.dequeueReusableCell(withReuseIdentifier: HomeMenuCell.identifier, for: indexPath) as! HomeMenuCell
+                cell.menuItem = self.menutItems[indexPath.row]
+                cell.backgroundColor = UIColor.clear
+                return cell
+            } else {
+                let cell = menuCollectionView.dequeueReusableCell(withReuseIdentifier: HomeCategoryCell.identifier, for: indexPath) as! HomeCategoryCell
+                cell.titleLabel.text = titles[indexPath.row]
+                return cell
+            }
         } else {
             let cell = actionCollectionView.dequeueReusableCell(withReuseIdentifier: HomeActionCell.identifier, for: indexPath) as! HomeActionCell
             cell.action = self.actions[indexPath.row]
@@ -410,7 +425,11 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if collectionView == self.menuCollectionView {
-            showMenuItem(menuItem: self.menutItems[indexPath.row])
+            if usesImages {
+                showMenuItem(menuItem: self.menutItems[indexPath.row])
+            } else {
+                print("selected")
+            }
         } else {
             switch self.actions[indexPath.row].title! {
             case "Call Us":
@@ -439,7 +458,11 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView == self.menuCollectionView {
-            return CGSize(width: 128, height: 130)
+            if usesImages {
+                return CGSize(width: 128, height: 130)
+            } else {
+                return CGSize(width: 120, height: 59)
+            }
         } else if collectionView == self.actionCollectionView {
             return CGSize(width: 159, height: 88)
         } else {
@@ -483,6 +506,41 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
             openMail()
         default:
             print("other")
+        }
+    }
+    
+    private func checkItems() {
+        self.menutItems.removeAll()
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").observe(.childAdded) { (snapshot) in
+            if let value = snapshot.value as? [String : Any] {
+                let item = MenuItem()
+                item.title = value["title"] as? String
+                item.desc = value["description"] as? String
+                item.price = value["price"] as? Double
+                item.imageUrl = value["image"] as? String
+                item.timestamp = value["time"] as? Int
+                self.menutItems.append(item)
+            }
+            self.menutItems.sort(by: { $1.timestamp! < $0.timestamp! } )
+            self.menuCollectionView.reloadData()
+        }
+    }
+    
+    private func checkCategories() {
+        self.titles.removeAll()
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("categories").observe(DataEventType.childAdded) { (snapshot) in
+            if let value = snapshot.value as? [String : Any] {
+                let category = Category()
+                category.name = value["name"] as? String
+                category.key = value["key"] as? String
+                category.selected = false
+                if category.name != nil {
+                    self.titles.append(category.name!)
+                }
+            }
+            DispatchQueue.main.async {
+                self.menuCollectionView.reloadData()
+            }
         }
     }
     
@@ -534,20 +592,19 @@ class HomeController: UIViewController, UICollectionViewDelegate, UICollectionVi
                 alertDescription.text = "If you want a rainbow, you'll have to put up with the rain! Keep going!!"
         }
         
-        print("resarch")
-        self.menutItems.removeAll()
-        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("menu").child("items").observe(.childAdded) { (snapshot) in
-            if let value = snapshot.value as? [String : Any] {
-                let item = MenuItem()
-                item.title = value["title"] as? String
-                item.desc = value["description"] as? String
-                item.price = value["price"] as? Double
-                item.imageUrl = value["image"] as? String
-                item.timestamp = value["time"] as? Int
-                self.menutItems.append(item)
+        Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("usesMenuImages").observeSingleEvent(of: DataEventType.value) { snapshot in
+            if let value = snapshot.value as? Bool {
+                if value != true {
+                    self.menuTitle.text = "Menu Categories"
+                }
+                self.usesImages = value
+                self.checkItems()
+                self.checkCategories()
+            } else {
+                self.usesImages = true
+                self.checkItems()
+                self.checkCategories()
             }
-            self.menutItems.sort(by: { $1.timestamp! < $0.timestamp! } )
-            self.menuCollectionView.reloadData()
         }
     }
     

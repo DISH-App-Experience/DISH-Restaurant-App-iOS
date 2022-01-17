@@ -7,9 +7,16 @@
 
 import UIKit
 import Firebase
+import EventKit
 import SDWebImage
 
 class EventController: UIViewController {
+    
+    // MARK: - Constants
+    
+    let eventStore : EKEventStore = EKEventStore()
+    
+    // MARK: - Variables
     
     var event : EventObject? {
         didSet {
@@ -113,6 +120,14 @@ class EventController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
+    
+    private let eventButton : MainButton = {
+        let button = MainButton()
+        button.setTitle("Add to Apple Calendar", for: UIControl.State.normal)
+        button.backgroundColor = Restaurant.shared.themeColor
+        button.addTarget(self, action: #selector(addToCalendar), for: UIControl.Event.touchUpInside)
+        return button
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -163,6 +178,38 @@ class EventController: UIViewController {
         descriptionLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 18).isActive = true
         descriptionLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -18).isActive = true
         descriptionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30).isActive = true
+        
+        infoView.addSubview(eventButton)
+        eventButton.bottomAnchor.constraint(equalTo: infoView.safeAreaLayoutGuide.bottomAnchor, constant: -25).isActive = true
+        eventButton.rightAnchor.constraint(equalTo: infoView.rightAnchor, constant: -25).isActive = true
+        eventButton.leftAnchor.constraint(equalTo: infoView.leftAnchor, constant: 25).isActive = true
+        eventButton.heightAnchor.constraint(equalToConstant: 44).isActive = true
+    }
+    
+    @objc func addToCalendar() {
+        if let selected = event {
+            eventStore.requestAccess(to: EKEntityType.event) { granted, error in
+                if granted && error == nil {
+                    let event : EKEvent = EKEvent(eventStore: self.eventStore)
+                    event.startDate = Date(timeIntervalSince1970: Double(selected.date!))
+                    event.endDate = Date(timeIntervalSince1970: Double(selected.endDate!))
+                    event.notes = selected.desc
+                    event.title = selected.name
+                    event.calendar = self.eventStore.defaultCalendarForNewEvents
+                    do {
+                        try self.eventStore.save(event, span: .thisEvent)
+                    } catch let error as NSError {
+                        self.simpleAlert(title: "Error, failed to save event", message: error.localizedDescription)
+                    }
+                    DispatchQueue.main.async {
+                        print("success")
+                        self.simpleAlert(title: "Success", message: "Added event to Apple Calendar")
+                    }
+                } else {
+                    print("failed to save event with error : \(error!.localizedDescription) or access not granted")
+                }
+            }
+        }
     }
 
 }
