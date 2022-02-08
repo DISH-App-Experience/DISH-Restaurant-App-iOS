@@ -176,8 +176,13 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        showLoading()
         updateViewConstraints()
         backend1()
+        
+        if shouldBackend2 {
+            backend2()
+        }
         
         navigationController?.navigationBar.barStyle = .black
         navigationController?.navigationBar.isHidden = true
@@ -284,11 +289,10 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                         print("price: \(menuItem.scanPrice!)")
                         print("title: \(menuItem.title!)")
                         self.updateViewsForItem(itemId: menuItem.key!)
-                    } else {
-                        print("no match")
                     }
                 }
             } else {
+                self.hideLoading()
                 print("no item found")
             }
         }
@@ -310,6 +314,8 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                         self.findLocationCount()
                     }
                 }
+            } else {
+                self.hideLoading()
             }
         }
     }
@@ -353,6 +359,7 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
             constraints()
             delegates()
             collectionView!.reloadData()
+            self.hideLoading()
         }
         
         view.addSubview(multipleView)
@@ -431,12 +438,14 @@ class RewardsController: UIViewController, UICollectionViewDelegate, UICollectio
                         rewardProgressLength = Float(distanceForOne) * Float(self.value!)
                     }
                     
+                    print("reviewing information")
                     self.rewardProgress.removeFromSuperview()
                     self.secondaryBackColor.addSubview(self.rewardProgress)
                     self.rewardProgress.topAnchor.constraint(equalTo: self.secondaryBackColor.topAnchor).isActive = true
                     self.rewardProgress.leftAnchor.constraint(equalTo: self.secondaryBackColor.leftAnchor).isActive = true
                     self.rewardProgress.widthAnchor.constraint(equalToConstant: CGFloat(rewardProgressLength)).isActive = true
                     self.rewardProgress.heightAnchor.constraint(equalToConstant: 27).isActive = true
+                    self.hideLoading()
                 }
             }
         }

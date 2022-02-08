@@ -18,6 +18,8 @@ class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMeta
     var videoPreviewLayer: AVCaptureVideoPreviewLayer?
     var qrCodeFrameView: UIView?
     
+    var stopScanning = false
+    
     private let supportedCodeTypes = [AVMetadataObject.ObjectType.upce,
                                       AVMetadataObject.ObjectType.code39,
                                       AVMetadataObject.ObjectType.code39Mod43,
@@ -116,21 +118,24 @@ class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMeta
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         // Check if the metadataObjects array is not nil and it contains at least one object
-        if metadataObjects.count == 0 {
-            qrCodeFrameView?.frame = CGRect.zero
-            return
-        }
-        
-        // Get the metadata object
-        let metadataObj = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
-        
-        if supportedCodeTypes.contains(metadataObj.type) {
-            // If the found metadata is equal to the QR code metadata then update the status label's text and set the bounds
-            let barCodeObject = videoPreviewLayer?.transformedMetadataObject(for: metadataObj)
-            qrCodeFrameView?.frame = barCodeObject!.bounds
+        if stopScanning == false {
+            if metadataObjects.count == 0 {
+                qrCodeFrameView?.frame = CGRect.zero
+                return
+            }
             
-            if metadataObj.stringValue != nil {
-                self.storage(withName: String(describing: metadataObj.stringValue!))
+            // Get the metadata object
+            let metadataObj = metadataObjects[0] as! AVMetadataMachineReadableCodeObject
+            
+            if supportedCodeTypes.contains(metadataObj.type) {
+                // If the found metadata is equal to the QR code metadata then update the status label's text and set the bounds
+                let barCodeObject = videoPreviewLayer?.transformedMetadataObject(for: metadataObj)
+                qrCodeFrameView?.frame = barCodeObject!.bounds
+                
+                if metadataObj.stringValue != nil {
+                    stopScanning = true
+                    self.storage(withName: String(describing: metadataObj.stringValue!))
+                }
             }
         }
     }
@@ -174,9 +179,15 @@ class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMeta
     }
     
     private func showPopUp() {
+        print("reffing for: \(scannedID)")
+        print("restaurant id is: \(Restaurant.shared.restaurantId)")
+        print("user uid is: \(Auth.auth().currentUser!.uid)")
         Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("lastScanned").observe(DataEventType.value) { snapshot in
             if let lastScanned = snapshot.value as? Int {
                 let date = Date().timeIntervalSince1970
+                print("date is: \(Int(date))")
+                print("last scanned is: \(Int(lastScanned))")
+                print("different is: \(Int(date) - lastScanned)")
                 if Int(date) - lastScanned < 600 {
                     self.simpleAlert(title: "Error", message: "Unrecognized Scan Card. Please try again later.")
                 } else {
@@ -206,13 +217,13 @@ class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMeta
                     self.present(alert, animated: true, completion: nil)
                 }
             } else {
-                let alert = UIAlertController(title: "QR Found!", message: "Add 1 scan to your visit?", preferredStyle: UIAlertController.Style.alert)
+                let alert = UIAlertController(title: "QR Found!", message: "Add 1 scan to your visit? Unrecognized time frame", preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: "Add 1 Visit", style: UIAlertAction.Style.default, handler: { _ in
                     Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).child("value").observeSingleEvent(of: DataEventType.value) { snapshot in
                         if let value = snapshot.value as? Int {
                             print("existing value")
                             let newNumber = Int(value + 1)
-                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
+                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": Int(Date().timeIntervalSince1970)])
                             scannedID = ""
                             self.analytics()
                             self.addSuccessNotification()
@@ -220,7 +231,7 @@ class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMeta
                         } else {
                             print("new value")
                             let newNumber = 1
-                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": "\(Int(Date().timeIntervalSince1970))"])
+                            Database.database().reference().child("Apps").child(Restaurant.shared.restaurantId).child("Users").child(Auth.auth().currentUser!.uid).child("rewards").child(scannedID).setValue(["value": newNumber, "lastScanned": Int(Date().timeIntervalSince1970)])
                             scannedID = ""
                             self.analytics()
                             self.addSuccessNotification()
@@ -296,12 +307,14 @@ class ScanController: UIViewController, CLLocationManagerDelegate, AVCaptureMeta
                         let current = CLLocation(latitude: self.locationManager.location!.coordinate.latitude, longitude: self.locationManager.location!.coordinate.longitude)
                         let distance = current.distance(from: destination) // meters
                         let maxRadius = 200 // meters
+                        print("destination is approx. \(distance) from your position")
                         if Int(distance) > maxRadius {
                             self.addErrorNotification()
                             self.simpleAlert(title: "Error", message: "You are too far away from the destination you claim to be at.")
                         } else {
                             // check if scanned again
                             scannedID = name
+                            print("scannedID: \(scannedID)")
                             self.showPopUp()
                         }
                     }
